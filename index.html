@@ -24,7 +24,7 @@
   --selected-blue:#3281ff;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#000}
+html,body{margin:0;min-height:100%;background:#79c5ee}
 body{
   font-family:Sen-Bold,sans-serif;
   color:#fff;
@@ -44,8 +44,11 @@ body{
   background-position:center;
   background-size:cover;
 }
-.game-dim{position:fixed;inset:0;z-index:-2;background:rgba(0,0,0,.55)}
-.page{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:12px}
+.game-dim{position:fixed;inset:0;z-index:-2;background:rgba(0,0,0,.12)}
+.page{
+  min-height:100vh;display:flex;align-items:flex-start;justify-content:center;
+  gap:18px;padding:12px;
+}
 .inventory-shell{
   width:min(500px,100%);
   height:min(95vh,760px);
@@ -287,9 +290,48 @@ body{
 .note{
   color:#666;font-size:11px;line-height:1.2;margin-top:9px;
 }
+.about-panel{
+  width:205px;
+  margin-top:auto;
+  margin-bottom:14px;
+  overflow:hidden;
+  border:2px solid #000;
+  border-radius:11px;
+  background:rgba(229,237,242,.96);
+  color:#171717;
+  box-shadow:0 5px 12px rgba(0,0,0,.48);
+}
+.about-title{
+  padding:4px 8px 3px;
+  border-bottom:2px solid #000;
+  background:linear-gradient(#7edbff 0 3px,#188ee9 3px,#0e69f2 100%);
+  color:#fff;
+  font-family:Poppins-ExtraBold,sans-serif;
+  font-size:11px;
+  text-transform:uppercase;
+  -webkit-text-stroke:1.5px #000;
+  paint-order:stroke;
+  text-shadow:0 1px 0 rgba(0,0,0,.3);
+}
+.about-body{padding:7px 9px 8px;font-size:10px;line-height:1.25}
+.about-links{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.about-handle{
+  color:#0878d1;
+  font-family:Poppins-ExtraBold,sans-serif;
+  font-size:10px;
+  text-decoration:none;
+}
+.about-handle:hover{text-decoration:underline}
+.about-separator{color:#8b98a4}
+.about-copy{margin:0}
+@media(max-width:850px){
+  .page{flex-direction:column;align-items:center}
+  .about-panel{width:205px;align-self:flex-end;margin:0 8px 8px 0}
+}
 @media(max-width:520px){
   .page{padding:0}
   .inventory-shell{height:100vh;min-height:100vh;border-radius:0;width:100%}
+  .about-panel{border-radius:11px;margin:8px;align-self:flex-end}
   .item-grid{grid-template-columns:repeat(4,76px);gap:8px 8px}
   .header-title{font-size:24px}
 }
@@ -332,6 +374,18 @@ body{
       <img class="bottom-icon" src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Wood.png" alt="">
     </footer>
   </section>
+
+  <aside class="about-panel" aria-labelledby="aboutTitle">
+    <div class="about-title" id="aboutTitle">About Me</div>
+    <div class="about-body">
+      <div class="about-links">
+        <a class="about-handle" href="https://www.reddit.com/user/quicknfresh/" target="_blank" rel="noopener noreferrer">Reddit @quicknfresh</a>
+        <span class="about-separator">·</span>
+        <a class="about-handle" href="https://github.com/quicknfresh" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+      <p class="about-copy">Just a doctor trying these codey majiggies</p>
+    </div>
+  </aside>
 </div>
 
 <div class="detail-overlay" id="detailOverlay">
