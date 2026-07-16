@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sword & Supper — New Items</title>
+<style>
+@font-face {
+  font-family: Poppins-ExtraBold;
+  src: url("https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/fonts/Poppins-ExtraBold-subset.ttf") format("truetype");
+  font-weight: 700;
+}
+@font-face {
+  font-family: Sen-Bold;
+  src: url("https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/fonts/Sen-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+:root {
+  --game-blue:#033fa4;
+  --bag-blue:#022c72;
+  --nav-dark:#1e2440;
+  --modal-grey:#e5edf2;
+  --bright-blue:#188ee9;
+  --selected-blue:#3281ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#79c5ee}
+body{
+  font-family:Sen-Bold,sans-serif;
+  color:#fff;
+  overflow-x:hidden;
+}
+.game-bg{
+  position:fixed;inset:0;z-index:-3;
+  background-image:
+    url("https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/battle/environments/weapons_market/stalls2.png"),
+    url("https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/battle/environments/weapons_market/stalls1.png"),
+    url("https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/battle/environments/weapons_market/wall.png"),
+    url("https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/battle/environments/weapons_market/walkable_area.png"),
+    url("https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/battle/environments/weapons_market/castle.png"),
+    url("https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/battle/environments/weapons_market/clouds.png"),
+    url("https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/battle/environments/weapons_market/sky.png");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:cover;
+}
+.game-dim{position:fixed;inset:0;z-index:-2;background:rgba(0,0,0,.12)}
+.page{
+  min-height:100vh;display:flex;align-items:flex-start;justify-content:center;
+  gap:18px;padding:12px;
+}
+.inventory-shell{
+  width:min(500px,100%);
+  height:min(95vh,760px);
+  min-height:620px;
+  display:flex;
+  flex-direction:column;
+  background:var(--nav-dark);
+  border:3px solid #000;
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 10px 24px rgba(0,0,0,.7);
+  position:relative;
+  transform-origin:center top;
+}
+.inventory-shell.minimized{height:58px;min-height:58px}
+.inventory-shell.minimized .inventory-body,
+.inventory-shell.minimized .category-nav,
+.inventory-shell.minimized .filter-nav{display:none}
+.header{
+  min-height:58px;
+  background:linear-gradient(#00adfe 0 5px,#188ee9 5px,#188ee9 calc(100% - 2px),#0e69f2 calc(100% - 2px));
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px 0 16px;
+  border-bottom:2px solid #000;
+}
+.header-title{
+  font-family:Poppins-ExtraBold,sans-serif;
+  font-size:28px;
+  color:#fff;
+  -webkit-text-stroke:4px #000;
+  paint-order:stroke;
+  text-shadow:0 3px 0 rgba(0,0,0,.35);
+  text-transform:uppercase;
+}
+.close-button{
+  width:44px;height:44px;border:3px solid #000;border-radius:10px;
+  background:linear-gradient(#ff6679 0 5px,#e62c49 5px);
+  color:#fff;font-family:Poppins-ExtraBold;font-size:32px;line-height:1;
+  -webkit-text-stroke:3px #000;paint-order:stroke;
+  cursor:pointer;box-shadow:inset 0 2px rgba(255,255,255,.35);
+}
+.close-button:hover{transform:scale(1.04)}
+.category-nav{
+  height:54px;
+  display:flex;
+  background:linear-gradient(#353d61 0 3px,#1e2440 3px);
+  border-bottom:2px solid #000;
+}
+.category-button{
+  flex:1;border:0;background:transparent;position:relative;cursor:pointer;padding:6px;
+}
+.category-button.active{
+  background:linear-gradient(#353d61 0 3px,#1e2440 3px,#1e2440 43px,#3281ff 43px);
+}
+.category-button img{
+  width:34px;height:34px;object-fit:contain;
+  filter:drop-shadow(3px 3px 0 #000);
+}
+.filter-nav{
+  min-height:47px;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  padding:5px 8px;
+  background:#050913;
+  border-bottom:2px solid #000;
+  overflow-x:auto;
+}
+.filter-button{
+  width:38px;height:38px;flex:0 0 auto;padding:4px;
+  border:2px solid transparent;border-radius:8px;background:transparent;cursor:pointer;
+}
+.filter-button.active{background:#3281ff;border-color:#000}
+.filter-button img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(2px 2px 0 #000)}
+.inventory-body{
+  flex:1;min-height:0;
+  display:flex;flex-direction:column;
+  background:var(--bag-blue);
+}
+.controls{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 12px 8px;
+  border-bottom:2px solid #0e69f2;
+  background:#0848a7;
+}
+.search-wrap{
+  flex:1;background:#fff;border:3px solid #000;border-radius:10px;padding:3px;
+}
+.search-wrap input{
+  width:100%;height:34px;border:3px solid #188ee9;border-radius:8px;
+  padding:0 10px;font-family:Sen-Bold;font-size:15px;outline:none;color:#151515;
+}
+.sort-button{
+  min-width:112px;height:40px;
+  border:2px solid #000;border-radius:9px;
+  background:linear-gradient(#80deff 0 4px,#2f94fc 4px);
+  color:#fff;font-family:Poppins-ExtraBold;font-size:15px;
+  -webkit-text-stroke:2px #000;paint-order:stroke;cursor:pointer;
+}
+.item-grid{
+  flex:1;overflow-y:auto;
+  display:grid;
+  grid-template-columns:repeat(5,80px);
+  grid-auto-rows:112px;
+  justify-content:center;
+  gap:8px 10px;
+  padding:14px 10px 90px;
+  scrollbar-width:thin;
+  scrollbar-color:#1e90ff #033994;
+}
+.item-grid::-webkit-scrollbar{width:7px}
+.item-grid::-webkit-scrollbar-track{background:#033994}
+.item-grid::-webkit-scrollbar-thumb{background:#1e90ff;border-radius:4px}
+.item-card{
+  border:0;background:transparent;color:#fff;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;
+}
+.equipment-slot{
+  width:78px;height:78px;border-radius:9px;position:relative;
+  background-size:cover;background-position:center;
+  transition:.18s;filter:drop-shadow(0 3px 2px rgba(0,0,0,.35));
+}
+.item-card:hover .equipment-slot{transform:scale(1.06)}
+.item-image-container{position:absolute;inset:0;display:grid;place-items:center}
+.item-image{width:78%;height:78%;object-fit:contain}
+.blueprint-item{filter:grayscale(100%);opacity:.8}
+.blueprint-overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.slot-badge{
+  position:absolute;top:0;left:0;width:25px;height:25px;border-radius:50%;
+  display:grid;place-items:center;border:2px solid #000;z-index:3;
+}
+.slot-badge img{width:19px;height:19px;object-fit:contain}
+.item-label{
+  width:86px;min-height:28px;
+  color:#fff;font-family:Sen-Bold;font-size:11px;line-height:11px;text-align:center;
+  -webkit-text-stroke:2px #000;paint-order:stroke;
+  display:flex;align-items:flex-start;justify-content:center;
+}
+.empty-message{
+  grid-column:1/-1;align-self:start;
+  font-family:Poppins-ExtraBold;font-size:22px;text-align:center;
+  -webkit-text-stroke:3px #000;paint-order:stroke;padding-top:50px;
+}
+.bottom-bar{
+  height:68px;background:#1e2440;border-top:3px solid #000;
+  display:flex;align-items:center;justify-content:space-evenly;
+  position:absolute;left:0;right:0;bottom:0;
+}
+.bottom-icon{width:48px;height:48px;object-fit:contain;filter:drop-shadow(3px 3px 0 #000);opacity:.9}
+.detail-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,.5);
+  display:none;align-items:center;justify-content:center;padding:12px;
+}
+.detail-overlay.open{display:flex}
+.item-modal{
+  width:min(400px,96vw);
+  height:min(650px,92vh);
+  background:#e5edf2;
+  border-radius:25px;border:3px solid #000;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 10px 28px rgba(0,0,0,.7);
+  transform:scale(.8);opacity:0;
+  transition:.18s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+}
+.detail-overlay.open .item-modal{transform:scale(1);opacity:1}
+.item-modal-header{
+  min-height:245px;
+  border-top:5px solid rgba(255,255,255,.25);
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:12px 55px 12px;
+}
+.detail-close{
+  position:absolute;right:10px;top:10px;z-index:4;
+  width:42px;height:42px;border:3px solid #000;border-radius:9px;
+  background:linear-gradient(#ff6679 0 5px,#e62c49 5px);
+  color:#fff;font-family:Poppins-ExtraBold;font-size:29px;
+  -webkit-text-stroke:3px #000;paint-order:stroke;cursor:pointer;
+}
+.modal-name{
+  font-family:Poppins-ExtraBold;font-size:22px;line-height:22px;color:#fff;
+  -webkit-text-stroke:4px #000;paint-order:stroke;text-wrap:balance;
+}
+.modal-rarity{
+  margin-top:3px;font-family:Sen-Bold;font-size:14px;text-transform:capitalize;
+  text-shadow:0 2px 0 #000;
+}
+.modal-icon{
+  width:92px;height:92px;margin-top:10px;
+  background-size:cover;background-position:center;display:grid;place-items:center;
+}
+.modal-icon img.main{width:78%;height:78%;object-fit:contain}
+.modal-icon img.overlay{position:absolute;width:92px;height:92px;object-fit:contain}
+.modal-min-level{
+  margin-top:6px;font-family:Poppins-ExtraBold;font-size:17px;color:#fff;
+  -webkit-text-stroke:3px #000;paint-order:stroke;
+}
+.level-selector{
+  display:flex;gap:5px;flex-wrap:wrap;justify-content:center;
+  padding:8px;background:#36364e;border-top:2px solid #000;border-bottom:2px solid #000;
+}
+.level-button{
+  min-width:55px;height:34px;border:2px solid #000;border-radius:8px;
+  background:linear-gradient(#77c9ff 0 4px,#2f94fc 4px);
+  color:#fff;font-family:Poppins-ExtraBold;font-size:12px;
+  -webkit-text-stroke:1.5px #000;paint-order:stroke;cursor:pointer;
+}
+.level-button.active{background:linear-gradient(#d69aff 0 4px,#a12aff 4px)}
+.item-modal-body{
+  flex:1;min-height:0;overflow-y:auto;
+  padding:14px 18px 22px;background:#e5edf2;color:#222;
+  font-family:Sen-Bold;-webkit-text-stroke:0;
+}
+.description{font-size:16px;line-height:1.25;margin:0 0 13px}
+.section-title{
+  font-family:Poppins-ExtraBold;font-size:15px;margin:13px 0 6px;color:#111;
+}
+.stat-row,.ability-row{
+  font-size:15px;margin:3px 0;display:flex;gap:7px;align-items:flex-start;
+}
+.ability-row::before{content:"+";font-family:Poppins-ExtraBold}
+.ability-row{font-weight:700}
+.info-dot{
+  display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;
+  background:#007acc;color:#fff;font-family:Poppins-ExtraBold;font-size:12px;
+}
+.resource-row{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;
+}
+.resource-chip{
+  background:#36364e;color:#fff;border:2px solid #000;border-radius:9px;
+  padding:5px 8px;font-size:12px;
+}
+.farm-row{
+  background:#181725;color:#fff;border-radius:10px;border:2px solid #000;
+  padding:9px 10px;margin:7px 0;font-size:13px;
+}
+.farm-row strong{color:#fff}
+.farm-chance{color:#ffe100;font-family:Poppins-ExtraBold}
+.note{
+  color:#666;font-size:11px;line-height:1.2;margin-top:9px;
+}
+.about-panel{
+  width:min(290px,100%);
+  margin-top:72px;
+  overflow:hidden;
+  border:3px solid #000;
+  border-radius:18px;
+  background:#e5edf2;
+  color:#171717;
+  box-shadow:0 10px 24px rgba(0,0,0,.55);
+}
+.about-title{
+  padding:10px 16px;
+  border-bottom:3px solid #000;
+  background:linear-gradient(#00adfe 0 5px,#188ee9 5px,#188ee9 calc(100% - 2px),#0e69f2 calc(100% - 2px));
+  color:#fff;
+  font-family:Poppins-ExtraBold,sans-serif;
+  font-size:22px;
+  text-transform:uppercase;
+  -webkit-text-stroke:3px #000;
+  paint-order:stroke;
+  text-shadow:0 3px 0 rgba(0,0,0,.3);
+}
+.about-body{padding:16px 18px 18px;font-size:16px;line-height:1.35}
+.about-handle{
+  display:inline-block;
+  margin-bottom:8px;
+  color:#0878d1;
+  font-family:Poppins-ExtraBold,sans-serif;
+  font-size:18px;
+  text-decoration:none;
+}
+.about-handle:hover{text-decoration:underline}
+.about-copy{margin:0}
+@media(max-width:850px){
+  .page{flex-direction:column;align-items:center}
+  .about-panel{width:min(500px,100%);margin-top:0}
+}
+@media(max-width:520px){
+  .page{padding:0}
+  .inventory-shell{height:100vh;min-height:100vh;border-radius:0;width:100%}
+  .about-panel{border-radius:0;border-left:0;border-right:0;margin:0}
+  .item-grid{grid-template-columns:repeat(4,76px);gap:8px 8px}
+  .header-title{font-size:24px}
+}
+</style>
+</head>
+<body>
+<div class="game-bg"></div>
+<div class="game-dim"></div>
+
+<div class="page">
+  <section class="inventory-shell" id="inventoryShell">
+    <header class="header">
+      <div class="header-title">New Items</div>
+      <button class="close-button" id="minimizeButton" title="Minimize">X</button>
+    </header>
+
+    <nav class="category-nav">
+      <button class="category-button active" data-mode="equipment" title="Equipment">
+        <img src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Sword_2.png" alt="">
+      </button>
+      <button class="category-button" data-mode="blueprint" title="Blueprints">
+        <img src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Blueprint.png" alt="">
+      </button>
+    </nav>
+
+    <nav class="filter-nav" id="slotFilters"></nav>
+
+    <div class="inventory-body">
+      <div class="controls">
+        <div class="search-wrap"><input id="searchInput" placeholder="Search new items..."></div>
+        <button class="sort-button" id="sortButton">Sort: New</button>
+      </div>
+      <div class="item-grid" id="itemGrid"></div>
+    </div>
+
+    <footer class="bottom-bar">
+      <img class="bottom-icon" src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Blueprint.png" alt="">
+      <img class="bottom-icon" src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Map_2.png" alt="">
+      <img class="bottom-icon" src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Sword_2.png" alt="">
+      <img class="bottom-icon" src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Wood.png" alt="">
+    </footer>
+  </section>
+
+  <aside class="about-panel" aria-labelledby="aboutTitle">
+    <div class="about-title" id="aboutTitle">About Me</div>
+    <div class="about-body">
+      <a class="about-handle" href="https://www.reddit.com/user/quicknfresh/" target="_blank" rel="noopener noreferrer">@quicknfresh</a>
+      <p class="about-copy">Just a doctor trying these codey majiggies</p>
+    </div>
+  </aside>
+</div>
+
+<div class="detail-overlay" id="detailOverlay">
+  <article class="item-modal" id="itemModal">
+    <button class="detail-close" id="detailClose">X</button>
+    <div class="item-modal-header" id="modalHeader">
+      <div class="modal-name" id="modalName"></div>
+      <div class="modal-rarity" id="modalRarity"></div>
+      <div class="modal-icon" id="modalIcon"></div>
+      <div class="modal-min-level" id="modalLevel"></div>
+    </div>
+    <div class="level-selector" id="levelSelector"></div>
+    <div class="item-modal-body" id="modalBody"></div>
+  </article>
+</div>
+
+<script>
+const DATA = [{"asset": "LastWord", "iconAsset": "LastWord", "isBlueprint": false, "name": "Last Word", "slot": "Weapon", "rarity": "uncommon", "description": "A persuasive blade with an unlockable Silence on Rage ability.", "levels": [{"name": "Last Word Lvl 1", "requiredLevel": 65, "sellPrice": 120, "stats": [{"label": "Physical DMG", "value": 61}], "abilities": [], "upgrade": [{"id": "EssenceChewy", "amount": 35}, {"id": "Iron", "amount": 390}, {"id": "Luminite", "amount": 15}], "upgradeYields": "LastWord2"}, {"name": "Last Word Lvl 2", "requiredLevel": 65, "sellPrice": 130, "stats": [{"label": "Physical DMG", "value": 64}], "abilities": [], "upgrade": [{"id": "EssenceChewy", "amount": 40}, {"id": "Iron", "amount": 500}, {"id": "Luminite", "amount": 17}], "upgradeYields": "LastWord3"}, {"name": "Last Word Lvl 3", "requiredLevel": 65, "sellPrice": 140, "stats": [{"label": "Physical DMG", "value": 68}], "abilities": [], "upgrade": [{"id": "EssenceChewy", "amount": 45}, {"id": "Iron", "amount": 620}, {"id": "Luminite", "amount": 29}], "upgradeYields": "LastWord4"}, {"name": "Last Word Lvl 4", "requiredLevel": 65, "sellPrice": 150, "stats": [{"label": "Physical DMG", "value": 73}], "abilities": [], "upgrade": [{"id": "EssenceChewy", "amount": 50}, {"id": "Iron", "amount": 750}, {"id": "Luminite", "amount": 32}], "upgradeYields": "LastWordUltimate"}, {"name": "Last Word Ultimate", "requiredLevel": 65, "sellPrice": 160, "stats": [{"label": "Physical DMG", "value": 79}], "abilities": ["30% chance to Silence on Rage"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "LastWord", "source": "Mountain Pass gear pool", "levels": "41–60", "chance": 3.1915, "weight": 3, "totalWeight": 94}, {"itemId": "LastWord", "source": "Mountain Pass gear pool", "levels": "61–80", "chance": 2.3346, "weight": 6, "totalWeight": 257}, {"itemId": "LastWord", "source": "Mountain Pass gear pool", "levels": "81+", "chance": 2.2814, "weight": 6, "totalWeight": 263}, {"itemId": "LastWord", "source": "Outer Temple gear pool", "levels": "41–80", "chance": 5.6604, "weight": 3, "totalWeight": 53}, {"itemId": "LastWord", "source": "Outer Temple gear pool", "levels": "81+", "chance": 2.3529, "weight": 6, "totalWeight": 255}, {"itemId": "LastWord", "source": "Seaside Cliffs gear pool", "levels": "61–80", "chance": 4.2254, "weight": 3, "totalWeight": 71}, {"itemId": "LastWord", "source": "Seaside Cliffs gear pool", "levels": "81+", "chance": 2.5714, "weight": 9, "totalWeight": 350}, {"itemId": "LastWord", "source": "Forbidden City gear pool", "levels": "41–80", "chance": 6.383, "weight": 3, "totalWeight": 47}, {"itemId": "LastWord", "source": "Forbidden City gear pool", "levels": "81+", "chance": 2.2472, "weight": 2, "totalWeight": 89}, {"itemId": "LastWord", "source": "Weapons Market gear pool", "levels": "61–80", "chance": 25.0, "weight": 1, "totalWeight": 4}, {"itemId": "LastWord", "source": "Weapons Market gear pool", "levels": "81–100", "chance": 4.5455, "weight": 4, "totalWeight": 88}, {"itemId": "LastWord", "source": "Weapons Market gear pool", "levels": "101–120", "chance": 2.2059, "weight": 3, "totalWeight": 136}, {"itemId": "LastWord", "source": "Weapons Market gear pool", "levels": "121–140", "chance": 2.0408, "weight": 3, "totalWeight": 147}]}, {"asset": "BlightedBlade", "iconAsset": "BlightedBlade", "isBlueprint": false, "name": "Blighted Blade", "slot": "Weapon", "rarity": "uncommon", "description": "A dark-forged sword steeped in corruption, with an unlockable Poison on Attack ability.", "levels": [{"name": "Blighted Blade Lvl 1", "requiredLevel": 55, "sellPrice": 80, "stats": [{"label": "Shadow DMG", "value": 18}], "abilities": [], "upgrade": [{"id": "EssenceDecadent", "amount": 12}, {"id": "Ore", "amount": 180}, {"id": "Luminite", "amount": 10}], "upgradeYields": "BlightedBlade2"}, {"name": "Blighted Blade Lvl 2", "requiredLevel": 55, "sellPrice": 90, "stats": [{"label": "Shadow DMG", "value": 20}], "abilities": [], "upgrade": [{"id": "EssenceDecadent", "amount": 18}, {"id": "Ore", "amount": 280}, {"id": "Luminite", "amount": 14}], "upgradeYields": "BlightedBlade3"}, {"name": "Blighted Blade Lvl 3", "requiredLevel": 55, "sellPrice": 100, "stats": [{"label": "Shadow DMG", "value": 22}], "abilities": [], "upgrade": [{"id": "EssenceDecadent", "amount": 25}, {"id": "Iron", "amount": 380}, {"id": "Luminite", "amount": 18}], "upgradeYields": "BlightedBlade4"}, {"name": "Blighted Blade Lvl 4", "requiredLevel": 55, "sellPrice": 115, "stats": [{"label": "Shadow DMG", "value": 25}], "abilities": [], "upgrade": [{"id": "EssenceDecadent", "amount": 32}, {"id": "Iron", "amount": 500}, {"id": "Luminite", "amount": 22}], "upgradeYields": "BlightedBladeUltimate"}, {"name": "Blighted Blade Ultimate", "requiredLevel": 55, "sellPrice": 130, "stats": [{"label": "Shadow DMG", "value": 28}], "abilities": ["30% chance to Poison on attack (25 damage per turn)"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "BlightedBlade", "source": "Mountain Pass gear pool", "levels": "41–60", "chance": 3.1915, "weight": 3, "totalWeight": 94}, {"itemId": "BlightedBlade", "source": "Mountain Pass gear pool", "levels": "61–80", "chance": 2.3346, "weight": 6, "totalWeight": 257}, {"itemId": "BlightedBlade", "source": "Mountain Pass gear pool", "levels": "81+", "chance": 1.1407, "weight": 3, "totalWeight": 263}, {"itemId": "BlightedBlade", "source": "Boss Rush: Mountain Pass", "levels": "61–80", "chance": 5.4054, "weight": 2, "totalWeight": 37}, {"itemId": "BlightedBlade", "source": "Boss Rush: Seaside Cliffs", "levels": "61–80", "chance": 6.0606, "weight": 2, "totalWeight": 33}, {"itemId": "BlightedBlade", "source": "Boss Rush: Seaside Cliffs", "levels": "81+", "chance": 2.439, "weight": 1, "totalWeight": 41}]}, {"asset": "FortuneFulfilled", "iconAsset": "FortuneFulfilled", "isBlueprint": false, "name": "Fortune Fulfilled", "slot": "Weapon", "rarity": "legendary", "description": "Formed from a shard of a fabled Luminite crystal. Unlocks an additional Rage On Crit ability which makes lucky warriors hard to beat.", "levels": [{"name": "Fortune Fulfilled Lvl 1", "requiredLevel": 35, "sellPrice": 200, "stats": [{"label": "Physical DMG", "value": 72}, {"label": "Crit", "value": "3.00%"}], "abilities": ["+15% Crit while at max HP"], "upgrade": [{"id": "Luminite", "amount": 35}, {"id": "EssenceTangy", "amount": 30}], "upgradeYields": "FortuneFulfilled2"}, {"name": "Fortune Fulfilled Lvl 2", "requiredLevel": 35, "sellPrice": 240, "stats": [{"label": "Physical DMG", "value": 75}, {"label": "Crit", "value": "3.00%"}], "abilities": ["+17% Crit while at max HP"], "upgrade": [{"id": "Luminite", "amount": 60}, {"id": "EssenceTangy", "amount": 38}], "upgradeYields": "FortuneFulfilled3"}, {"name": "Fortune Fulfilled Lvl 3", "requiredLevel": 35, "sellPrice": 300, "stats": [{"label": "Physical DMG", "value": 80}, {"label": "Crit", "value": "3.00%"}], "abilities": ["+20% Crit while at max HP"], "upgrade": [{"id": "Luminite", "amount": 88}, {"id": "EssenceTangy", "amount": 48}], "upgradeYields": "FortuneFulfilled4"}, {"name": "Fortune Fulfilled Lvl 4", "requiredLevel": 35, "sellPrice": 370, "stats": [{"label": "Physical DMG", "value": 87}, {"label": "Crit", "value": "3.00%"}], "abilities": ["+24% Crit while at max HP"], "upgrade": [{"id": "Luminite", "amount": 120}, {"id": "EssenceTangy", "amount": 58}], "upgradeYields": "FortuneFulfilledUltimate"}, {"name": "Fortune Fulfilled Ultimate", "requiredLevel": 35, "sellPrice": 450, "stats": [{"label": "Physical DMG", "value": 95}, {"label": "Crit", "value": "3.00%"}], "abilities": ["+30% Crit while at max HP", "Gain Rage on Crit"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "FortuneFulfilled", "source": "Boss Rush: Mossy Forest", "levels": "41–60", "chance": 1.4706, "weight": 1, "totalWeight": 68}, {"itemId": "FortuneFulfilled", "source": "Boss Rush: Mossy Forest", "levels": "61–80", "chance": 1.1236, "weight": 1, "totalWeight": 89}, {"itemId": "FortuneFulfilled", "source": "Boss Rush: Mountain Pass", "levels": "21–40", "chance": 1.6393, "weight": 1, "totalWeight": 61}, {"itemId": "FortuneFulfilled", "source": "Boss Rush: Mountain Pass", "levels": "41–60", "chance": 1.8519, "weight": 1, "totalWeight": 54}, {"itemId": "FortuneFulfilled", "source": "Boss Rush: Mountain Pass", "levels": "61–80", "chance": 2.7027, "weight": 1, "totalWeight": 37}, {"itemId": "FortuneFulfilled", "source": "Boss Rush: Ruined Path", "levels": "21–40", "chance": 1.8182, "weight": 1, "totalWeight": 55}, {"itemId": "FortuneFulfilled", "source": "Boss Rush: Ruined Path", "levels": "41–60", "chance": 1.3514, "weight": 1, "totalWeight": 74}, {"itemId": "FortuneFulfilled", "source": "Boss Rush: Ruined Path", "levels": "61–80", "chance": 1.0989, "weight": 1, "totalWeight": 91}]}, {"asset": "DazzleCharm", "iconAsset": "DazzleCharm", "isBlueprint": false, "name": "Dazzle Charm", "slot": "Amulet", "rarity": "uncommon", "description": "A mesmerizing charm that confounds attackers.", "levels": [{"name": "Dazzle Charm Lvl 1", "requiredLevel": 65, "sellPrice": 100, "stats": [{"label": "Dodge", "value": "4.00%"}, {"label": "HypnotizeResist", "value": "10.00%"}], "abilities": [], "upgrade": [{"id": "EssenceTangy", "amount": 30}, {"id": "Iron", "amount": 350}, {"id": "Luminite", "amount": 15}], "upgradeYields": "DazzleCharm2"}, {"name": "Dazzle Charm Lvl 2", "requiredLevel": 65, "sellPrice": 110, "stats": [{"label": "Dodge", "value": "4.00%"}, {"label": "HypnotizeResist", "value": "12.00%"}], "abilities": [], "upgrade": [{"id": "EssenceTangy", "amount": 35}, {"id": "Iron", "amount": 450}, {"id": "Luminite", "amount": 17}], "upgradeYields": "DazzleCharm3"}, {"name": "Dazzle Charm Lvl 3", "requiredLevel": 65, "sellPrice": 120, "stats": [{"label": "Dodge", "value": "5.00%"}, {"label": "HypnotizeResist", "value": "15.00%"}], "abilities": [], "upgrade": [{"id": "EssenceTangy", "amount": 40}, {"id": "Iron", "amount": 550}, {"id": "Luminite", "amount": 29}], "upgradeYields": "DazzleCharm4"}, {"name": "Dazzle Charm Lvl 4", "requiredLevel": 65, "sellPrice": 135, "stats": [{"label": "Dodge", "value": "5.00%"}, {"label": "HypnotizeResist", "value": "17.00%"}], "abilities": [], "upgrade": [{"id": "EssenceTangy", "amount": 45}, {"id": "Iron", "amount": 650}, {"id": "Luminite", "amount": 32}], "upgradeYields": "DazzleCharm5"}, {"name": "Dazzle Charm Lvl 5", "requiredLevel": 65, "sellPrice": 150, "stats": [{"label": "Dodge", "value": "6.00%"}, {"label": "HypnotizeResist", "value": "20.00%"}], "abilities": [], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "DazzleCharm", "source": "Mountain Pass gear pool", "levels": "41–60", "chance": 3.1915, "weight": 3, "totalWeight": 94}, {"itemId": "DazzleCharm", "source": "Mountain Pass gear pool", "levels": "61–80", "chance": 2.3346, "weight": 6, "totalWeight": 257}, {"itemId": "DazzleCharm", "source": "Mountain Pass gear pool", "levels": "81+", "chance": 2.2814, "weight": 6, "totalWeight": 263}, {"itemId": "DazzleCharm", "source": "Outer Temple gear pool", "levels": "41–80", "chance": 7.5472, "weight": 4, "totalWeight": 53}, {"itemId": "DazzleCharm", "source": "Outer Temple gear pool", "levels": "81+", "chance": 2.3529, "weight": 6, "totalWeight": 255}, {"itemId": "DazzleCharm", "source": "Seaside Cliffs gear pool", "levels": "61–80", "chance": 5.6338, "weight": 4, "totalWeight": 71}, {"itemId": "DazzleCharm", "source": "Seaside Cliffs gear pool", "levels": "81+", "chance": 2.5714, "weight": 9, "totalWeight": 350}, {"itemId": "DazzleCharm", "source": "Forbidden City gear pool", "levels": "41–80", "chance": 6.383, "weight": 3, "totalWeight": 47}, {"itemId": "DazzleCharm", "source": "Forbidden City gear pool", "levels": "81+", "chance": 2.2472, "weight": 2, "totalWeight": 89}]}, {"asset": "GloriousAmulet", "iconAsset": "GloriousAmulet", "isBlueprint": false, "name": "Glorious Amulet", "slot": "Amulet", "rarity": "rare", "description": "A fabled amulet imbued with the power of untold worshipers. Unlocks a powerful ability. ", "levels": [{"name": "Glorious Amulet Lvl 1", "requiredLevel": 165, "sellPrice": 300, "stats": [{"label": "Dodge", "value": "3.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCreamy", "amount": 85}, {"id": "Iron", "amount": 1500}, {"id": "Luminite", "amount": 55}], "upgradeYields": "GloriousAmulet2"}, {"name": "Glorious Amulet Lvl 2", "requiredLevel": 165, "sellPrice": 340, "stats": [{"label": "Dodge", "value": "3.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCreamy", "amount": 95}, {"id": "Iron", "amount": 1700}, {"id": "Luminite", "amount": 65}], "upgradeYields": "GloriousAmulet3"}, {"name": "Glorious Amulet Lvl 3", "requiredLevel": 165, "sellPrice": 390, "stats": [{"label": "Dodge", "value": "4.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCreamy", "amount": 105}, {"id": "Iron", "amount": 1900}, {"id": "Luminite", "amount": 75}], "upgradeYields": "GloriousAmulet4"}, {"name": "Glorious Amulet Lvl 4", "requiredLevel": 165, "sellPrice": 440, "stats": [{"label": "Dodge", "value": "4.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCreamy", "amount": 112}, {"id": "Iron", "amount": 2050}, {"id": "Luminite", "amount": 82}], "upgradeYields": "GloriousAmuletUltimate"}, {"name": "Glorious Amulet Ultimate", "requiredLevel": 165, "sellPrice": 480, "stats": [{"label": "Dodge", "value": "5.00%"}], "abilities": ["Strike twice every other turn"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "GloriousAmulet", "source": "Castle Road gear pool", "levels": "141–160", "chance": 1.3072, "weight": 2, "totalWeight": 153}, {"itemId": "GloriousAmulet", "source": "Castle Road gear pool", "levels": "161+", "chance": 4.3103, "weight": 5, "totalWeight": 116}, {"itemId": "GloriousAmulet", "source": "Weapons Market gear pool", "levels": "141–160", "chance": 1.6, "weight": 2, "totalWeight": 125}, {"itemId": "GloriousAmulet", "source": "Weapons Market gear pool", "levels": "161+", "chance": 4.902, "weight": 5, "totalWeight": 102}, {"itemId": "GloriousAmulet", "source": "Blossom Golem boss loot", "levels": "101+", "chance": 2.6786, "weight": 6, "totalWeight": 224}, {"itemId": "GloriousAmulet", "source": "Poison Demon boss loot", "levels": "81+", "chance": 0.2169, "weight": 1, "totalWeight": 461}, {"itemId": "GloriousAmulet", "source": "Gilded Guardian boss loot", "levels": "141+", "chance": 4.0, "weight": 6, "totalWeight": 150}, {"itemId": "GloriousAmulet", "source": "Living Wall boss loot", "levels": "141+", "chance": 3.4091, "weight": 9, "totalWeight": 264}]}, {"asset": "SavageSolitaire", "iconAsset": "SavageSolitaire", "isBlueprint": false, "name": "Savage Solitaire", "slot": "Ring", "rarity": "legendary", "description": "A ring of burning intensity, with an unlockable Rage on Hit Count ability.", "levels": [{"name": "Savage Solitaire Lvl 1", "requiredLevel": 105, "sellPrice": 350, "stats": [{"label": "Crit", "value": "6.00%"}], "abilities": [], "upgrade": [{"id": "Wood", "amount": 1200}, {"id": "EssenceTangy", "amount": 47}, {"id": "Luminite", "amount": 38}], "upgradeYields": "SavageSolitaire2"}, {"name": "Savage Solitaire Lvl 2", "requiredLevel": 105, "sellPrice": 390, "stats": [{"label": "Crit", "value": "7.00%"}], "abilities": [], "upgrade": [{"id": "Wood", "amount": 1350}, {"id": "EssenceTangy", "amount": 58}, {"id": "Luminite", "amount": 48}], "upgradeYields": "SavageSolitaire3"}, {"name": "Savage Solitaire Lvl 3", "requiredLevel": 105, "sellPrice": 440, "stats": [{"label": "Crit", "value": "8.00%"}], "abilities": [], "upgrade": [{"id": "Wood", "amount": 1500}, {"id": "EssenceTangy", "amount": 68}, {"id": "Luminite", "amount": 58}], "upgradeYields": "SavageSolitaire4"}, {"name": "Savage Solitaire Lvl 4", "requiredLevel": 105, "sellPrice": 490, "stats": [{"label": "Crit", "value": "9.00%"}], "abilities": [], "upgrade": [{"id": "Wood", "amount": 1650}, {"id": "EssenceTangy", "amount": 78}, {"id": "Luminite", "amount": 68}], "upgradeYields": "SavageSolitaireUltimate"}, {"name": "Savage Solitaire Ultimate", "requiredLevel": 105, "sellPrice": 550, "stats": [{"label": "Crit", "value": "10.00%"}], "abilities": ["Gain 20 Rage at hit count 3"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "SavageSolitaire", "source": "Boss Rush: Forbidden City", "levels": "81+", "chance": 1.9231, "weight": 1, "totalWeight": 52}, {"itemId": "SavageSolitaire", "source": "Boss Rush: New Eden", "levels": "81+", "chance": 0.4464, "weight": 1, "totalWeight": 224}, {"itemId": "SavageSolitaire", "source": "Boss Rush: Ancient Battlefield", "levels": "101–120", "chance": 1.1236, "weight": 1, "totalWeight": 89}, {"itemId": "SavageSolitaire", "source": "Poison Demon boss loot", "levels": "81+", "chance": 1.0846, "weight": 5, "totalWeight": 461}, {"itemId": "SavageSolitaire", "source": "Gilded Guardian boss loot", "levels": "101–120", "chance": 0.7692, "weight": 1, "totalWeight": 130}, {"itemId": "SavageSolitaire", "source": "Gilded Guardian boss loot", "levels": "121–140", "chance": 1.4815, "weight": 2, "totalWeight": 135}, {"itemId": "SavageSolitaire", "source": "Living Wall boss loot", "levels": "101–120", "chance": 0.4464, "weight": 1, "totalWeight": 224}, {"itemId": "SavageSolitaire", "source": "Living Wall boss loot", "levels": "121–140", "chance": 0.4202, "weight": 1, "totalWeight": 238}]}, {"asset": "GloriousSignet", "iconAsset": "GloriousSignet", "isBlueprint": false, "name": "Glorious Signet", "slot": "Ring", "rarity": "rare", "description": "A ring of legend, charged with the devotion of a legion of worshipers. Unlocks Hypnotize On Attack. ", "levels": [{"name": "Glorious Signet Lvl 1", "requiredLevel": 165, "sellPrice": 280, "stats": [{"label": "Crit", "value": "4.00%"}, {"label": "HypnotizeResist", "value": "5.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCreamy", "amount": 66}, {"id": "Iron", "amount": 1120}, {"id": "Luminite", "amount": 40}], "upgradeYields": "GloriousSignet2"}, {"name": "Glorious Signet Lvl 2", "requiredLevel": 165, "sellPrice": 320, "stats": [{"label": "Crit", "value": "4.00%"}, {"label": "HypnotizeResist", "value": "6.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCreamy", "amount": 75}, {"id": "Iron", "amount": 1300}, {"id": "Luminite", "amount": 50}], "upgradeYields": "GloriousSignet3"}, {"name": "Glorious Signet Lvl 3", "requiredLevel": 165, "sellPrice": 370, "stats": [{"label": "Crit", "value": "5.00%"}, {"label": "HypnotizeResist", "value": "7.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCreamy", "amount": 83}, {"id": "Iron", "amount": 1480}, {"id": "Luminite", "amount": 58}], "upgradeYields": "GloriousSignet4"}, {"name": "Glorious Signet Lvl 4", "requiredLevel": 165, "sellPrice": 420, "stats": [{"label": "Crit", "value": "5.00%"}, {"label": "HypnotizeResist", "value": "8.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCreamy", "amount": 90}, {"id": "Iron", "amount": 1600}, {"id": "Luminite", "amount": 65}], "upgradeYields": "GloriousSignet5"}, {"name": "Glorious Signet Ultimate", "requiredLevel": 165, "sellPrice": 460, "stats": [{"label": "Crit", "value": "6.00%"}, {"label": "HypnotizeResist", "value": "10.00%"}], "abilities": ["25% chance to Hypnotize on attack"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "GloriousSignet", "source": "Castle Road gear pool", "levels": "141–160", "chance": 1.3072, "weight": 2, "totalWeight": 153}, {"itemId": "GloriousSignet", "source": "Castle Road gear pool", "levels": "161+", "chance": 4.3103, "weight": 5, "totalWeight": 116}, {"itemId": "GloriousSignet", "source": "Weapons Market gear pool", "levels": "141–160", "chance": 1.6, "weight": 2, "totalWeight": 125}, {"itemId": "GloriousSignet", "source": "Weapons Market gear pool", "levels": "161+", "chance": 4.902, "weight": 5, "totalWeight": 102}, {"itemId": "GloriousSignet", "source": "Blossom Golem boss loot", "levels": "101+", "chance": 2.6786, "weight": 6, "totalWeight": 224}, {"itemId": "GloriousSignet", "source": "Poison Demon boss loot", "levels": "81+", "chance": 0.2169, "weight": 1, "totalWeight": 461}, {"itemId": "GloriousSignet", "source": "Gilded Guardian boss loot", "levels": "141+", "chance": 4.0, "weight": 6, "totalWeight": 150}, {"itemId": "GloriousSignet", "source": "Living Wall boss loot", "levels": "141+", "chance": 3.4091, "weight": 9, "totalWeight": 264}]}, {"asset": "EvadersBinding", "iconAsset": "EvadersBinding", "isBlueprint": false, "name": "Evader's Binding", "slot": "Belt", "rarity": "uncommon", "description": "A belt enchanted with evasive magic, with an unlockable Low HP Dodge Boost ability.", "levels": [{"name": "Evader's Binding Lvl 1", "requiredLevel": 85, "sellPrice": 130, "stats": [{"label": "Speed", "value": "4"}, {"label": "Dodge", "value": "2.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCrunchy", "amount": 40}, {"id": "Stone", "amount": 500}, {"id": "Luminite", "amount": 22}], "upgradeYields": "EvadersBinding2"}, {"name": "Evader's Binding Lvl 2", "requiredLevel": 85, "sellPrice": 140, "stats": [{"label": "Speed", "value": "4"}, {"label": "Dodge", "value": "2.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCrunchy", "amount": 45}, {"id": "Stone", "amount": 600}, {"id": "Luminite", "amount": 25}], "upgradeYields": "EvadersBinding3"}, {"name": "Evader's Binding Lvl 3", "requiredLevel": 85, "sellPrice": 155, "stats": [{"label": "Speed", "value": "5"}, {"label": "Dodge", "value": "3.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCrunchy", "amount": 50}, {"id": "Stone", "amount": 700}, {"id": "Luminite", "amount": 39}], "upgradeYields": "EvadersBinding4"}, {"name": "Evader's Binding Lvl 4", "requiredLevel": 85, "sellPrice": 165, "stats": [{"label": "Speed", "value": "5"}, {"label": "Dodge", "value": "3.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCrunchy", "amount": 55}, {"id": "Stone", "amount": 800}, {"id": "Luminite", "amount": 44}], "upgradeYields": "EvadersBindingUltimate"}, {"name": "Evader's Binding Ultimate", "requiredLevel": 85, "sellPrice": 180, "stats": [{"label": "Speed", "value": "6"}, {"label": "Dodge", "value": "4.00%"}], "abilities": ["+15% Dodge below 30% HP"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "EvadersBinding", "source": "Mountain Pass gear pool", "levels": "81+", "chance": 1.9011, "weight": 5, "totalWeight": 263}, {"itemId": "EvadersBinding", "source": "Outer Temple gear pool", "levels": "81+", "chance": 2.3529, "weight": 6, "totalWeight": 255}, {"itemId": "EvadersBinding", "source": "Seaside Cliffs gear pool", "levels": "81+", "chance": 2.2857, "weight": 8, "totalWeight": 350}, {"itemId": "EvadersBinding", "source": "Forbidden City gear pool", "levels": "81+", "chance": 3.3708, "weight": 3, "totalWeight": 89}, {"itemId": "EvadersBinding", "source": "Ancient Battlefield gear pool", "levels": "81–100", "chance": 2.6316, "weight": 3, "totalWeight": 114}, {"itemId": "EvadersBinding", "source": "Ancient Battlefield gear pool", "levels": "101–120", "chance": 2.8571, "weight": 5, "totalWeight": 175}, {"itemId": "EvadersBinding", "source": "Ancient Battlefield gear pool", "levels": "121–140", "chance": 1.7442, "weight": 3, "totalWeight": 172}, {"itemId": "EvadersBinding", "source": "Castle Road gear pool", "levels": "81–100", "chance": 2.7778, "weight": 3, "totalWeight": 108}, {"itemId": "EvadersBinding", "source": "Castle Road gear pool", "levels": "101–120", "chance": 2.9762, "weight": 5, "totalWeight": 168}, {"itemId": "EvadersBinding", "source": "Castle Road gear pool", "levels": "121–140", "chance": 2.4691, "weight": 4, "totalWeight": 162}]}, {"asset": "StarbrightSash", "iconAsset": "StarbrightSash", "isBlueprint": false, "name": "Starbright Sash", "slot": "Belt", "rarity": "rare", "description": "A shimmering sash that channels starlight into fury, with an unlockable Rage on Crit ability.", "levels": [{"name": "Starbright Sash Lvl 1", "requiredLevel": 55, "sellPrice": 95, "stats": [{"label": "Speed", "value": "6"}, {"label": "Crit", "value": "1.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 200}, {"id": "Stone", "amount": 240}, {"id": "Luminite", "amount": 15}, {"id": "EssenceFluffy", "amount": 30}], "upgradeYields": "StarbrightSash2"}, {"name": "Starbright Sash Lvl 2", "requiredLevel": 55, "sellPrice": 115, "stats": [{"label": "Speed", "value": "6"}, {"label": "Crit", "value": "1.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 300}, {"id": "Stone", "amount": 340}, {"id": "Luminite", "amount": 22}, {"id": "EssenceFluffy", "amount": 34}], "upgradeYields": "StarbrightSash3"}, {"name": "Starbright Sash Lvl 3", "requiredLevel": 55, "sellPrice": 140, "stats": [{"label": "Speed", "value": "7"}, {"label": "Crit", "value": "2.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 380}, {"id": "Stone", "amount": 430}, {"id": "Luminite", "amount": 28}, {"id": "EssenceFluffy", "amount": 37}], "upgradeYields": "StarbrightSash4"}, {"name": "Starbright Sash Lvl 4", "requiredLevel": 55, "sellPrice": 165, "stats": [{"label": "Speed", "value": "7"}, {"label": "Crit", "value": "2.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 450}, {"id": "Stone", "amount": 510}, {"id": "Luminite", "amount": 34}, {"id": "EssenceFluffy", "amount": 40}], "upgradeYields": "StarbrightSashUltimate"}, {"name": "Starbright Sash Ultimate", "requiredLevel": 55, "sellPrice": 190, "stats": [{"label": "Speed", "value": "8"}, {"label": "Crit", "value": "3.00%"}], "abilities": ["Gain 10 Rage on Crit"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "StarbrightSash", "source": "Mountain Pass gear pool", "levels": "41–60", "chance": 3.1915, "weight": 3, "totalWeight": 94}, {"itemId": "StarbrightSash", "source": "Mountain Pass gear pool", "levels": "61–80", "chance": 2.3346, "weight": 6, "totalWeight": 257}, {"itemId": "StarbrightSash", "source": "Mountain Pass gear pool", "levels": "81+", "chance": 1.1407, "weight": 3, "totalWeight": 263}, {"itemId": "StarbrightSash", "source": "Boss Rush: Mountain Pass", "levels": "61–80", "chance": 5.4054, "weight": 2, "totalWeight": 37}, {"itemId": "StarbrightSash", "source": "Boss Rush: Seaside Cliffs", "levels": "61–80", "chance": 3.0303, "weight": 1, "totalWeight": 33}, {"itemId": "StarbrightSash", "source": "Boss Rush: Seaside Cliffs", "levels": "81+", "chance": 2.439, "weight": 1, "totalWeight": 41}]}, {"asset": "ExplorersAlly", "iconAsset": "ExplorersAlly", "isBlueprint": false, "name": "Explorer's Ally", "slot": "Head", "rarity": "uncommon", "description": "A resourceful headpiece that helps purge toxins when healed.", "levels": [{"name": "Explorer's Ally Lvl 1", "requiredLevel": 112, "sellPrice": 90, "stats": [{"label": "MaxHp", "value": "90"}, {"label": "Dodge", "value": "1.00%"}], "abilities": ["20% chance to remove Poison when healed"], "upgrade": [{"id": "EssenceFresh", "amount": 18}, {"id": "Wood", "amount": 780}, {"id": "Luminite", "amount": 22}], "upgradeYields": "ExplorersAlly2"}, {"name": "Explorer's Ally Lvl 2", "requiredLevel": 112, "sellPrice": 110, "stats": [{"label": "MaxHp", "value": "100"}, {"label": "Dodge", "value": "1.00%"}], "abilities": ["25% chance to remove Poison when healed"], "upgrade": [{"id": "EssenceFresh", "amount": 23}, {"id": "Iron", "amount": 880}, {"id": "Luminite", "amount": 32}], "upgradeYields": "ExplorersAlly3"}, {"name": "Explorer's Ally Lvl 3", "requiredLevel": 112, "sellPrice": 135, "stats": [{"label": "MaxHp", "value": "110"}, {"label": "Dodge", "value": "2.00%"}], "abilities": ["30% chance to remove Poison when healed"], "upgrade": [{"id": "EssenceFresh", "amount": 30}, {"id": "Stone", "amount": 890}, {"id": "Luminite", "amount": 32}], "upgradeYields": "ExplorersAlly5"}, {"name": "Explorer's Ally Lvl 4", "requiredLevel": 112, "sellPrice": 160, "stats": [{"label": "MaxHp", "value": "120"}, {"label": "Dodge", "value": "2.00%"}], "abilities": ["35% chance to remove Poison when healed"], "upgrade": [{"id": "EssenceFresh", "amount": 37}, {"id": "Ore", "amount": 1280}, {"id": "Luminite", "amount": 35}], "upgradeYields": "ExplorersAlly6"}, {"name": "Explorer's Ally Lvl 5", "requiredLevel": 112, "sellPrice": 190, "stats": [{"label": "MaxHp", "value": "130"}, {"label": "Dodge", "value": "3.00%"}], "abilities": ["40% chance to remove Poison when healed"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "ExplorersAlly", "source": "Outer Temple gear pool", "levels": "81+", "chance": 2.3529, "weight": 6, "totalWeight": 255}, {"itemId": "ExplorersAlly", "source": "Forbidden City gear pool", "levels": "81+", "chance": 2.2472, "weight": 2, "totalWeight": 89}, {"itemId": "ExplorersAlly", "source": "Ancient Battlefield gear pool", "levels": "101–120", "chance": 1.7143, "weight": 3, "totalWeight": 175}, {"itemId": "ExplorersAlly", "source": "Ancient Battlefield gear pool", "levels": "121–140", "chance": 4.0698, "weight": 7, "totalWeight": 172}, {"itemId": "ExplorersAlly", "source": "Ancient Battlefield gear pool", "levels": "141–160", "chance": 1.9481, "weight": 3, "totalWeight": 154}, {"itemId": "ExplorersAlly", "source": "Castle Road gear pool", "levels": "101–120", "chance": 1.7857, "weight": 3, "totalWeight": 168}, {"itemId": "ExplorersAlly", "source": "Castle Road gear pool", "levels": "121–140", "chance": 4.321, "weight": 7, "totalWeight": 162}, {"itemId": "ExplorersAlly", "source": "Castle Road gear pool", "levels": "141–160", "chance": 2.6144, "weight": 4, "totalWeight": 153}, {"itemId": "ExplorersAlly", "source": "Weapons Market gear pool", "levels": "101–120", "chance": 1.4706, "weight": 2, "totalWeight": 136}, {"itemId": "ExplorersAlly", "source": "Weapons Market gear pool", "levels": "121–140", "chance": 3.4014, "weight": 5, "totalWeight": 147}]}, {"asset": "WingedHelm", "iconAsset": "WingedHelm", "isBlueprint": false, "name": "Winged Helm", "slot": "Head", "rarity": "epic", "description": "A crested helm that bolsters the wearer's vitality, with an unlockable Crit Up if Max HP ability.", "levels": [{"name": "Winged Helm Lvl 1", "requiredLevel": 35, "sellPrice": 100, "stats": [{"label": "MaxHp", "value": "130"}, {"label": "Dodge", "value": "1.00%"}], "abilities": [], "upgrade": [{"id": "EssenceHearty", "amount": 30}, {"id": "Iron", "amount": 450}, {"id": "Luminite", "amount": 12}], "upgradeYields": "WingedHelm2"}, {"name": "Winged Helm Lvl 2", "requiredLevel": 35, "sellPrice": 115, "stats": [{"label": "MaxHp", "value": "130"}, {"label": "Dodge", "value": "2.00%"}], "abilities": [], "upgrade": [{"id": "EssenceHearty", "amount": 35}, {"id": "Iron", "amount": 580}, {"id": "Luminite", "amount": 18}], "upgradeYields": "WingedHelm3"}, {"name": "Winged Helm Lvl 3", "requiredLevel": 35, "sellPrice": 135, "stats": [{"label": "MaxHp", "value": "130"}, {"label": "Dodge", "value": "3.00%"}], "abilities": [], "upgrade": [{"id": "EssenceHearty", "amount": 42}, {"id": "Iron", "amount": 720}, {"id": "Luminite", "amount": 24}], "upgradeYields": "WingedHelm4"}, {"name": "Winged Helm Lvl 4", "requiredLevel": 35, "sellPrice": 155, "stats": [{"label": "MaxHp", "value": "130"}, {"label": "Dodge", "value": "4.00%"}], "abilities": [], "upgrade": [{"id": "EssenceHearty", "amount": 50}, {"id": "Iron", "amount": 880}, {"id": "Luminite", "amount": 30}], "upgradeYields": "WingedHelmUltimate"}, {"name": "Winged Helm Ultimate", "requiredLevel": 35, "sellPrice": 180, "stats": [{"label": "MaxHp", "value": "130"}, {"label": "Dodge", "value": "5.00%"}], "abilities": ["Crit boost while at max HP"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "WingedHelm", "source": "Mountain Pass gear pool", "levels": "41–60", "chance": 1.0638, "weight": 1, "totalWeight": 94}, {"itemId": "WingedHelm", "source": "Mountain Pass gear pool", "levels": "61–80", "chance": 0.3891, "weight": 1, "totalWeight": 257}, {"itemId": "WingedHelm", "source": "Mountain Pass gear pool", "levels": "81+", "chance": 0.3802, "weight": 1, "totalWeight": 263}, {"itemId": "WingedHelm", "source": "Ruined Path gear pool", "levels": "41–60", "chance": 0.4878, "weight": 1, "totalWeight": 205}, {"itemId": "WingedHelm", "source": "Ruined Path gear pool", "levels": "61+", "chance": 0.5181, "weight": 1, "totalWeight": 193}, {"itemId": "WingedHelm", "source": "Fire Head boss loot", "levels": "1–60", "chance": 1.1905, "weight": 1, "totalWeight": 84}, {"itemId": "WingedHelm", "source": "Fire Head boss loot", "levels": "61–80", "chance": 3.2258, "weight": 2, "totalWeight": 62}, {"itemId": "WingedHelm", "source": "Fire Head boss loot", "levels": "81–100", "chance": 2.0, "weight": 1, "totalWeight": 50}]}, {"asset": "NoviceSerape", "iconAsset": "NoviceSerape", "isBlueprint": false, "name": "Novice Serape", "slot": "Chest", "rarity": "common", "description": "A simple traveler's wrap offering basic protection.", "levels": [{"name": "Novice Serape", "requiredLevel": 55, "sellPrice": 60, "stats": [{"label": "Defense", "value": "48"}], "abilities": [], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "NoviceSerape", "source": "Mountain Pass gear pool", "levels": "41–60", "chance": 3.1915, "weight": 3, "totalWeight": 94}, {"itemId": "NoviceSerape", "source": "Mountain Pass gear pool", "levels": "61–80", "chance": 2.3346, "weight": 6, "totalWeight": 257}, {"itemId": "NoviceSerape", "source": "Mountain Pass gear pool", "levels": "81+", "chance": 1.5209, "weight": 4, "totalWeight": 263}, {"itemId": "NoviceSerape", "source": "Boss Rush: Mountain Pass", "levels": "61–80", "chance": 5.4054, "weight": 2, "totalWeight": 37}, {"itemId": "NoviceSerape", "source": "Boss Rush: Seaside Cliffs", "levels": "61–80", "chance": 6.0606, "weight": 2, "totalWeight": 33}, {"itemId": "NoviceSerape", "source": "Boss Rush: Seaside Cliffs", "levels": "81+", "chance": 2.439, "weight": 1, "totalWeight": 41}]}, {"asset": "BoltproofSerape", "iconAsset": "BoltproofSerape", "isBlueprint": false, "name": "Boltproof Serape", "slot": "Chest", "rarity": "rare", "description": "A traveler's wrap woven with lightning resistance. ", "levels": [{"name": "Boltproof Serape Lvl 1", "requiredLevel": 55, "sellPrice": 95, "stats": [{"label": "Defense", "value": "59"}, {"label": "LightningResist", "value": "7.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 200}, {"id": "Stone", "amount": 240}, {"id": "Luminite", "amount": 15}, {"id": "EssenceSpicy", "amount": 30}], "upgradeYields": "BoltproofSerape2"}, {"name": "Boltproof Serape Lvl 2", "requiredLevel": 55, "sellPrice": 115, "stats": [{"label": "Defense", "value": "64"}, {"label": "LightningResist", "value": "10.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 300}, {"id": "Stone", "amount": 340}, {"id": "Luminite", "amount": 22}, {"id": "EssenceSpicy", "amount": 34}], "upgradeYields": "BoltproofSerape3"}, {"name": "Boltproof Serape Lvl 3", "requiredLevel": 55, "sellPrice": 140, "stats": [{"label": "Defense", "value": "71"}, {"label": "LightningResist", "value": "13.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 380}, {"id": "Stone", "amount": 430}, {"id": "Luminite", "amount": 28}, {"id": "EssenceSpicy", "amount": 37}], "upgradeYields": "BoltproofSerape4"}, {"name": "Boltproof Serape Lvl 4", "requiredLevel": 55, "sellPrice": 165, "stats": [{"label": "Defense", "value": "78"}, {"label": "LightningResist", "value": "17.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 450}, {"id": "Stone", "amount": 510}, {"id": "Luminite", "amount": 34}, {"id": "EssenceSpicy", "amount": 40}], "upgradeYields": "BoltproofSerape5"}, {"name": "Boltproof Serape Lv 5", "requiredLevel": 55, "sellPrice": 190, "stats": [{"label": "Defense", "value": "86"}, {"label": "LightningResist", "value": "20.00%"}], "abilities": [], "upgrade": [], "upgradeYields": null}], "drops": []}, {"asset": "ScorchedSerape", "iconAsset": "ScorchedSerape", "isBlueprint": false, "name": "Scorched Serape", "slot": "Chest", "rarity": "rare", "description": "A traveler's wrap woven with fire resistance.", "levels": [{"name": "Scorched Serape Lvl 1", "requiredLevel": 55, "sellPrice": 95, "stats": [{"label": "Defense", "value": "59"}, {"label": "FireResist", "value": "7.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 200}, {"id": "Stone", "amount": 240}, {"id": "Luminite", "amount": 15}, {"id": "EssenceSpicy", "amount": 30}], "upgradeYields": "ScorchedSerape2"}, {"name": "Scorched Serape Lvl 2", "requiredLevel": 55, "sellPrice": 115, "stats": [{"label": "Defense", "value": "64"}, {"label": "FireResist", "value": "10.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 300}, {"id": "Stone", "amount": 340}, {"id": "Luminite", "amount": 22}, {"id": "EssenceSpicy", "amount": 34}], "upgradeYields": "ScorchedSerape3"}, {"name": "Scorched Serape Lvl 3", "requiredLevel": 55, "sellPrice": 140, "stats": [{"label": "Defense", "value": "71"}, {"label": "FireResist", "value": "13.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 380}, {"id": "Stone", "amount": 430}, {"id": "Luminite", "amount": 28}, {"id": "EssenceSpicy", "amount": 37}], "upgradeYields": "ScorchedSerape4"}, {"name": "Scorched Serape Lvl 4", "requiredLevel": 55, "sellPrice": 165, "stats": [{"label": "Defense", "value": "78"}, {"label": "FireResist", "value": "17.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 450}, {"id": "Stone", "amount": 510}, {"id": "Luminite", "amount": 34}, {"id": "EssenceSpicy", "amount": 40}], "upgradeYields": "ScorchedSerape5"}, {"name": "Scorched Serape Lvl 5", "requiredLevel": 55, "sellPrice": 190, "stats": [{"label": "Defense", "value": "86"}, {"label": "FireResist", "value": "20.00%"}], "abilities": [], "upgrade": [], "upgradeYields": null}], "drops": []}, {"asset": "FrostweaveSerape", "iconAsset": "FrostweaveSerape", "isBlueprint": false, "name": "Ice Serape", "slot": "Chest", "rarity": "rare", "description": "A traveler's wrap woven with ice resistance.", "levels": [{"name": "Ice Serape Lvl 1", "requiredLevel": 55, "sellPrice": 95, "stats": [{"label": "Defense", "value": "59"}, {"label": "IceResist", "value": "7.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 200}, {"id": "Stone", "amount": 240}, {"id": "Luminite", "amount": 15}, {"id": "EssenceSpicy", "amount": 30}], "upgradeYields": "FrostweaveSerape2"}, {"name": "Ice Serape Lvl 2", "requiredLevel": 55, "sellPrice": 115, "stats": [{"label": "Defense", "value": "64"}, {"label": "IceResist", "value": "10.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 300}, {"id": "Stone", "amount": 340}, {"id": "Luminite", "amount": 22}, {"id": "EssenceSpicy", "amount": 34}], "upgradeYields": "FrostweaveSerape3"}, {"name": "Ice Serape Lvl 3", "requiredLevel": 55, "sellPrice": 140, "stats": [{"label": "Defense", "value": "71"}, {"label": "IceResist", "value": "13.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 380}, {"id": "Stone", "amount": 430}, {"id": "Luminite", "amount": 28}, {"id": "EssenceSpicy", "amount": 37}], "upgradeYields": "FrostweaveSerape4"}, {"name": "Ice Serape Lvl 4", "requiredLevel": 55, "sellPrice": 165, "stats": [{"label": "Defense", "value": "78"}, {"label": "IceResist", "value": "17.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 450}, {"id": "Stone", "amount": 510}, {"id": "Luminite", "amount": 34}, {"id": "EssenceSpicy", "amount": 40}], "upgradeYields": "FrostweaveSerape5"}, {"name": "Ice Serape Lvl 5", "requiredLevel": 55, "sellPrice": 190, "stats": [{"label": "Defense", "value": "86"}, {"label": "IceResist", "value": "20.00%"}], "abilities": [], "upgrade": [], "upgradeYields": null}], "drops": []}, {"asset": "ShadowSerape", "iconAsset": "ShadowSerape", "isBlueprint": false, "name": "Shadow Serape", "slot": "Chest", "rarity": "rare", "description": "A traveler's wrap woven with shadow resistance,", "levels": [{"name": "Shadow Serape Lvl 1", "requiredLevel": 55, "sellPrice": 95, "stats": [{"label": "Defense", "value": "59"}, {"label": "ShadowResist", "value": "7.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 200}, {"id": "Stone", "amount": 240}, {"id": "Luminite", "amount": 15}, {"id": "EssenceSpicy", "amount": 30}], "upgradeYields": "ShadowSerape2"}, {"name": "Shadow Serape Lvl 2", "requiredLevel": 55, "sellPrice": 115, "stats": [{"label": "Defense", "value": "64"}, {"label": "ShadowResist", "value": "10.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 300}, {"id": "Stone", "amount": 340}, {"id": "Luminite", "amount": 22}, {"id": "EssenceSpicy", "amount": 34}], "upgradeYields": "ShadowSerape3"}, {"name": "Shadow Serape Lvl 3", "requiredLevel": 55, "sellPrice": 140, "stats": [{"label": "Defense", "value": "71"}, {"label": "ShadowResist", "value": "13.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 380}, {"id": "Stone", "amount": 430}, {"id": "Luminite", "amount": 28}, {"id": "EssenceSpicy", "amount": 37}], "upgradeYields": "ShadowSerape4"}, {"name": "Shadow Serape Lvl 4", "requiredLevel": 55, "sellPrice": 165, "stats": [{"label": "Defense", "value": "78"}, {"label": "ShadowResist", "value": "17.00%"}], "abilities": [], "upgrade": [{"id": "Iron", "amount": 450}, {"id": "Stone", "amount": 510}, {"id": "Luminite", "amount": 34}, {"id": "EssenceSpicy", "amount": 40}], "upgradeYields": "ShadowSerape5"}, {"name": "Shadow Serape Lvl 5", "requiredLevel": 55, "sellPrice": 190, "stats": [{"label": "Defense", "value": "86"}, {"label": "ShadowResist", "value": "20.00%"}], "abilities": [], "upgrade": [], "upgradeYields": null}], "drops": []}, {"asset": "RivetedCuirass", "iconAsset": "RivetedCuirass", "isBlueprint": false, "name": "Riveted Cuirass", "slot": "Chest", "rarity": "uncommon", "description": "A tough breastplate that protects the wearer with an unlockable ability to make enemies vulnerable.", "levels": [{"name": "Riveted Cuirass Lvl 1", "requiredLevel": 96, "sellPrice": 140, "stats": [{"label": "Defense", "value": "70"}, {"label": "VulnerableResist", "value": "5.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCrunchy", "amount": 20}, {"id": "Iron", "amount": 780}, {"id": "Luminite", "amount": 22}], "upgradeYields": "RivetedCuirass2"}, {"name": "Riveted Cuirass Lvl 2", "requiredLevel": 96, "sellPrice": 155, "stats": [{"label": "Defense", "value": "78"}, {"label": "VulnerableResist", "value": "7.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCrunchy", "amount": 26}, {"id": "Stone", "amount": 880}, {"id": "Luminite", "amount": 30}], "upgradeYields": "RivetedCuirass3"}, {"name": "Riveted Cuirass Lvl 3", "requiredLevel": 96, "sellPrice": 170, "stats": [{"label": "Defense", "value": "85"}, {"label": "VulnerableResist", "value": "10.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCrunchy", "amount": 34}, {"id": "Ore", "amount": 890}, {"id": "Luminite", "amount": 34}], "upgradeYields": "RivetedCuirass4"}, {"name": "Riveted Cuirass Lvl 4", "requiredLevel": 96, "sellPrice": 185, "stats": [{"label": "Defense", "value": "90"}, {"label": "VulnerableResist", "value": "13.00%"}], "abilities": [], "upgrade": [{"id": "EssenceCrunchy", "amount": 42}, {"id": "Wood", "amount": 1280}, {"id": "Luminite", "amount": 38}], "upgradeYields": "RivetedCuirassUltimate"}, {"name": "Riveted Cuirass Ultimate", "requiredLevel": 96, "sellPrice": 200, "stats": [{"label": "Defense", "value": "95"}, {"label": "VulnerableResist", "value": "16.00%"}], "abilities": ["40% chance every 2 turns to apply Vulnerable for 2 turns (-25% Defense)"], "upgrade": [], "upgradeYields": null}], "drops": [{"itemId": "RivetedCuirass", "source": "Outer Temple gear pool", "levels": "81+", "chance": 1.1765, "weight": 3, "totalWeight": 255}, {"itemId": "RivetedCuirass", "source": "Forbidden City gear pool", "levels": "81+", "chance": 3.3708, "weight": 3, "totalWeight": 89}, {"itemId": "RivetedCuirass", "source": "Ancient Battlefield gear pool", "levels": "101–120", "chance": 2.2857, "weight": 4, "totalWeight": 175}, {"itemId": "RivetedCuirass", "source": "Ancient Battlefield gear pool", "levels": "121–140", "chance": 2.3256, "weight": 4, "totalWeight": 172}, {"itemId": "RivetedCuirass", "source": "Castle Road gear pool", "levels": "101–120", "chance": 2.381, "weight": 4, "totalWeight": 168}, {"itemId": "RivetedCuirass", "source": "Castle Road gear pool", "levels": "121–140", "chance": 1.8519, "weight": 3, "totalWeight": 162}, {"itemId": "RivetedCuirass", "source": "Weapons Market gear pool", "levels": "101–120", "chance": 1.4706, "weight": 2, "totalWeight": 136}, {"itemId": "RivetedCuirass", "source": "Weapons Market gear pool", "levels": "121–140", "chance": 2.7211, "weight": 4, "totalWeight": 147}]}, {"asset": "BlueprintBoltproofSerape", "iconAsset": "BoltproofSerape", "isBlueprint": true, "name": "Blueprint: Boltproof Serape", "slot": "Blueprint", "rarity": "rare", "description": "A blueprint to craft a Boltproof Serape.", "levels": [{"name": "Blueprint: Boltproof Serape", "requiredLevel": 1, "sellPrice": 60, "stats": [], "abilities": [], "upgrade": [{"id": "NoviceSerape", "amount": 1}, {"id": "EssenceTangy", "amount": 33}, {"id": "EssenceFluffy", "amount": 23}, {"id": "Luminite", "amount": 40}, {"id": "Iron", "amount": 275}], "upgradeYields": "BoltproofSerape"}], "drops": [{"itemId": "BlueprintBoltproofSerape", "source": "Skeleton enemy loot", "levels": "41–60", "chance": 1.5385, "weight": 1, "totalWeight": 65}]}, {"asset": "BlueprintScorchedSerape", "iconAsset": "ScorchedSerape", "isBlueprint": true, "name": "Blueprint: Scorched Serape", "slot": "Blueprint", "rarity": "rare", "description": "A blueprint to craft a Scorched Serape.", "levels": [{"name": "Blueprint: Scorched Serape", "requiredLevel": 1, "sellPrice": 60, "stats": [], "abilities": [], "upgrade": [{"id": "NoviceSerape", "amount": 1}, {"id": "EssenceSpicy", "amount": 24}, {"id": "EssenceHearty", "amount": 32}, {"id": "Luminite", "amount": 27}, {"id": "Ore", "amount": 275}], "upgradeYields": "ScorchedSerape"}], "drops": [{"itemId": "BlueprintScorchedSerape", "source": "Slime enemy loot", "levels": "61–80", "chance": 1.1905, "weight": 2, "totalWeight": 168}]}, {"asset": "BlueprintFrostweaveSerape", "iconAsset": "FrostweaveSerape", "isBlueprint": true, "name": "Blueprint: Ice Serape", "slot": "Blueprint", "rarity": "rare", "description": "A blueprint to craft an Ice Serape.", "levels": [{"name": "Blueprint: Ice Serape", "requiredLevel": 1, "sellPrice": 60, "stats": [], "abilities": [], "upgrade": [{"id": "NoviceSerape", "amount": 1}, {"id": "EssenceFresh", "amount": 22}, {"id": "EssenceCreamy", "amount": 26}, {"id": "Luminite", "amount": 28}, {"id": "Stone", "amount": 310}], "upgradeYields": "FrostweaveSerape"}], "drops": [{"itemId": "BlueprintFrostweaveSerape", "source": "Golem enemy loot", "levels": "61–80", "chance": 1.1976, "weight": 2, "totalWeight": 167}]}, {"asset": "BlueprintShadowSerape", "iconAsset": "ShadowSerape", "isBlueprint": true, "name": "Blueprint: Shadow Serape", "slot": "Blueprint", "rarity": "rare", "description": "A blueprint to craft a Shadow Serape.", "levels": [{"name": "Blueprint: Shadow Serape", "requiredLevel": 1, "sellPrice": 60, "stats": [], "abilities": [], "upgrade": [{"id": "NoviceSerape", "amount": 1}, {"id": "EssenceDecadent", "amount": 24}, {"id": "EssenceCrunchy", "amount": 22}, {"id": "Luminite", "amount": 35}, {"id": "Wood", "amount": 340}], "upgradeYields": "ShadowSerape"}], "drops": [{"itemId": "BlueprintShadowSerape", "source": "Dark enemy loot", "levels": "41–60", "chance": 1.3333, "weight": 1, "totalWeight": 75}, {"itemId": "BlueprintShadowSerape", "source": "Dark enemy loot", "levels": "61–80", "chance": 1.1236, "weight": 1, "totalWeight": 89}]}, {"asset": "BlueprintFerocityRing", "iconAsset": "InfernoRing", "isBlueprint": true, "name": "Blueprint: Ferocity Ring", "slot": "Blueprint", "rarity": "epic", "description": "A blueprint to craft a Ferocity Ring.", "levels": [{"name": "Blueprint: Ferocity Ring", "requiredLevel": 1, "sellPrice": 90, "stats": [], "abilities": [], "upgrade": [{"id": "MuscleRing", "amount": 1}, {"id": "EssenceSpicy", "amount": 12}, {"id": "ConflagrationRing", "amount": 1}], "upgradeYields": "FerocityRing"}], "drops": [{"itemId": "BlueprintFerocityRingV2", "source": "Mountain Pass gear pool", "levels": "61–80", "chance": 0.3891, "weight": 1, "totalWeight": 257}, {"itemId": "BlueprintFerocityRingV2", "source": "Mountain Pass gear pool", "levels": "81+", "chance": 0.3802, "weight": 1, "totalWeight": 263}, {"itemId": "BlueprintFerocityRingV2", "source": "Outer Temple gear pool", "levels": "81+", "chance": 0.3922, "weight": 1, "totalWeight": 255}, {"itemId": "BlueprintFerocityRingV2", "source": "Seaside Cliffs gear pool", "levels": "81+", "chance": 0.2857, "weight": 1, "totalWeight": 350}, {"itemId": "BlueprintFerocityRingV2", "source": "Golem enemy loot", "levels": "61–80", "chance": 0.5988, "weight": 1, "totalWeight": 167}, {"itemId": "BlueprintFerocityRingV2", "source": "Slime enemy loot", "levels": "61–80", "chance": 0.5952, "weight": 1, "totalWeight": 168}]}];
+const BASE = "https://cabbageidle-eimoap-0-0-85-webview.devvit.net";
+
+const rarityGradient = {
+  common:"radial-gradient(circle,#617e8a 0%,#3d4f5e 100%)",
+  uncommon:"radial-gradient(circle,#219463 0%,#196f58 100%)",
+  rare:"radial-gradient(circle,#2f94fc 0%,#4a5ce1 100%)",
+  epic:"radial-gradient(circle,#c980fe 0%,#8808ff 100%)",
+  legendary:"radial-gradient(circle,#ffde00 0%,#ffb532 100%)",
+  mythic:"radial-gradient(circle,#eb2f47 0%,#a11828 100%)"
+};
+const rarityText = {
+  common:"#9baebc", uncommon:"#8ffe78", rare:"#6efdff",
+  epic:"#b962d1", legendary:"#fff", mythic:"#fea79b"
+};
+const rarityBadge = {
+  common:"#617f8b", uncommon:"#22ef1d", rare:"#0b82f3",
+  epic:"#ae3af8", legendary:"#ffde01", mythic:"#df2f38"
+};
+const slotIcon = {
+  Head:"slot_icon_head.png", Chest:"slot_icon_chest.png",
+  Amulet:"slot_icon_amulet.png", Weapon:"slot_icon_weapon.png",
+  Ring:"slot_icon_ring.png", Belt:"slot_icon_belt.png"
+};
+const slotBadge = {
+  Head:"slot_badge_head.png", Chest:"slot_badge_chest.png",
+  Amulet:"slot_badge_amulet.png", Weapon:"slot_badge_weapon.png",
+  Ring:"slot_badge_ring.png", Belt:"slot_badge_belt.png"
+};
+const slots = ["All","Head","Chest","Amulet","Weapon","Ring","Belt"];
+
+let mode = "equipment";
+let selectedSlot = "All";
+let sortMode = "new";
+let selectedFamily = null;
+let selectedLevel = 0;
+
+const grid = document.getElementById("itemGrid");
+const filters = document.getElementById("slotFilters");
+const search = document.getElementById("searchInput");
+const sortButton = document.getElementById("sortButton");
+const overlay = document.getElementById("detailOverlay");
+const modalHeader = document.getElementById("modalHeader");
+const modalName = document.getElementById("modalName");
+const modalRarity = document.getElementById("modalRarity");
+const modalIcon = document.getElementById("modalIcon");
+const modalLevel = document.getElementById("modalLevel");
+const levelSelector = document.getElementById("levelSelector");
+const modalBody = document.getElementById("modalBody");
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[ch]));
+}
+function equipBg(rarity) { return `${BASE}/assets/ui/equip_bg_${rarity}.png`; }
+function itemIcon(asset) { return `${BASE}/assets/ui/item-icons/${asset}.png`; }
+function blueprintOverlay() { return `${BASE}/assets/ui/blueprint_icon_overlay.png`; }
+
+function drawFilters() {
+  filters.innerHTML = "";
+  if (mode === "blueprint") {
+    const btn = document.createElement("button");
+    btn.className = "filter-button active";
+    btn.innerHTML = `<img src="${BASE}/assets/ui/inventory/PictoIcon_Blueprint.png" alt="Blueprint">`;
+    filters.appendChild(btn);
+    return;
+  }
+  slots.forEach(slot => {
+    const button = document.createElement("button");
+    button.className = "filter-button" + (slot === selectedSlot ? " active" : "");
+    button.title = slot;
+    button.dataset.slot = slot;
+    button.innerHTML = slot === "All"
+      ? `<img src="${BASE}/assets/ui/inventory/PictoIcon_Sword_2.png" alt="All">`
+      : `<img src="${BASE}/assets/ui/${slotIcon[slot]}" alt="${slot}">`;
+    button.addEventListener("click", () => {
+      selectedSlot = slot;
+      drawFilters();
+      renderGrid();
+    });
+    filters.appendChild(button);
+  });
+}
+
+function filteredData() {
+  const q = search.value.trim().toLowerCase();
+  let rows = DATA.filter(item => mode === "blueprint" ? item.isBlueprint : !item.isBlueprint);
+  if (mode === "equipment" && selectedSlot !== "All") rows = rows.filter(item => item.slot === selectedSlot);
+  if (q) rows = rows.filter(item => JSON.stringify(item).toLowerCase().includes(q));
+
+  if (sortMode === "name") rows.sort((a,b) => a.name.localeCompare(b.name));
+  else if (sortMode === "level") rows.sort((a,b) => (a.levels[0]?.requiredLevel || 0) - (b.levels[0]?.requiredLevel || 0));
+  else if (sortMode === "rarity") {
+    const order = {mythic:0,legendary:1,epic:2,rare:3,uncommon:4,common:5};
+    rows.sort((a,b) => order[a.rarity] - order[b.rarity]);
+  }
+  return rows;
+}
+
+function renderGrid() {
+  const rows = filteredData();
+  if (!rows.length) {
+    grid.innerHTML = `<div class="empty-message">No items found</div>`;
+    return;
+  }
+  grid.innerHTML = rows.map((item, index) => {
+    const badge = item.slot !== "Blueprint"
+      ? `<span class="slot-badge" style="background:${rarityBadge[item.rarity]}"><img src="${BASE}/assets/ui/${slotBadge[item.slot]}" alt=""></span>`
+      : "";
+    const bp = item.isBlueprint ? " blueprint-item" : "";
+    const overlayImg = item.isBlueprint
+      ? `<img class="blueprint-overlay" src="${blueprintOverlay()}" alt="">`
+      : "";
+    return `
+      <button class="item-card" data-index="${DATA.indexOf(item)}" title="${esc(item.name)}">
+        <span class="equipment-slot" style="background-image:url('${equipBg(item.rarity)}')">
+          ${badge}
+          <span class="item-image-container">
+            <img class="item-image${bp}" src="${itemIcon(item.iconAsset)}" alt="${esc(item.name)}">
+            ${overlayImg}
+          </span>
+        </span>
+        <span class="item-label">${esc(item.name)}</span>
+      </button>`;
+  }).join("");
+
+  grid.querySelectorAll(".item-card").forEach(card => {
+    card.addEventListener("click", () => openItem(DATA[Number(card.dataset.index)]));
+  });
+}
+
+function levelLabel(name, index, total) {
+  const match = name.match(/(?:Lvl|Lv)\s*(\d+)/i);
+  if (match) return `Lvl ${match[1]}`;
+  if (/Ultimate/i.test(name)) return "Ultimate";
+  if (/Blueprint:/i.test(name)) return "Blueprint";
+  return total === 1 ? "Base" : `Level ${index + 1}`;
+}
+
+function renderModal() {
+  const family = selectedFamily;
+  const level = family.levels[selectedLevel];
+  modalHeader.style.background = rarityGradient[family.rarity];
+  modalName.textContent = level.name;
+  modalRarity.textContent = family.rarity;
+  modalRarity.style.color = rarityText[family.rarity];
+  modalLevel.textContent = `Min Level: ${level.requiredLevel || 1}`;
+
+  modalIcon.style.backgroundImage = `url("${equipBg(family.rarity)}")`;
+  modalIcon.innerHTML = `
+    <img class="main${family.isBlueprint ? " blueprint-item" : ""}" src="${itemIcon(family.iconAsset)}" alt="${esc(family.name)}">
+    ${family.isBlueprint ? `<img class="overlay" src="${blueprintOverlay()}" alt="">` : ""}
+  `;
+
+  levelSelector.innerHTML = family.levels.map((entry, index) => `
+    <button class="level-button${index === selectedLevel ? " active" : ""}" data-level="${index}">
+      ${esc(levelLabel(entry.name, index, family.levels.length))}
+    </button>`).join("");
+  levelSelector.querySelectorAll(".level-button").forEach(button => {
+    button.addEventListener("click", () => {
+      selectedLevel = Number(button.dataset.level);
+      renderModal();
+    });
+  });
+
+  const stats = level.stats.length
+    ? level.stats.map(stat => `<div class="stat-row"><strong>${esc(stat.label)}:</strong> ${esc(stat.value)}</div>`).join("")
+    : `<div class="stat-row">No stat modifiers</div>`;
+
+  const abilities = level.abilities.length
+    ? `<div class="section-title">Abilities <span class="info-dot">i</span></div>` +
+      level.abilities.map(text => `<div class="ability-row">${esc(text)}</div>`).join("")
+    : "";
+
+  const upgrades = level.upgrade.length
+    ? `<div class="section-title">Upgrade Requirements</div>
+       <div class="resource-row">${level.upgrade.map(resource =>
+         `<span class="resource-chip">${esc(resource.amount)} ${esc(resource.id)}</span>`
+       ).join("")}</div>`
+    : "";
+
+  const farm = family.drops.length
+    ? `<div class="section-title">Where to Farm</div>` +
+      family.drops.map(drop => `
+        <div class="farm-row">
+          <strong>${esc(drop.source)}</strong><br>
+          Map/enemy level: ${esc(drop.levels)}<br>
+          Conditional pool chance: <span class="farm-chance">${drop.chance.toFixed(2)}%</span>
+          <div class="note">Weight ${drop.weight} / ${drop.totalWeight} in this loot tier</div>
+        </div>`).join("")
+    : `<div class="section-title">Where to Obtain</div>
+       <div class="farm-row">No direct drop was found. Obtain this version by upgrading or crafting from its base item or blueprint.</div>`;
+
+  modalBody.innerHTML = `
+    <p class="description">${esc(family.description)}</p>
+    <div class="section-title">Stats</div>
+    ${stats}
+    ${abilities}
+    ${upgrades}
+    ${farm}
+    <div class="section-title">Sell Price</div>
+    <div class="stat-row"><strong>${level.sellPrice}</strong> coins</div>
+    <p class="note">Drop percentages are conditional within the named loot pool. Mission or event wrapper chances may make the overall per-run probability lower.</p>
+  `;
+}
+
+function openItem(item) {
+  selectedFamily = item;
+  selectedLevel = 0;
+  renderModal();
+  overlay.classList.add("open");
+}
+
+function closeItem() { overlay.classList.remove("open"); }
+
+document.querySelectorAll(".category-button").forEach(button => {
+  button.addEventListener("click", () => {
+    mode = button.dataset.mode;
+    document.querySelectorAll(".category-button").forEach(b => b.classList.toggle("active", b === button));
+    selectedSlot = "All";
+    drawFilters();
+    renderGrid();
+  });
+});
+
+search.addEventListener("input", renderGrid);
+sortButton.addEventListener("click", () => {
+  const sequence = ["new","rarity","name","level"];
+  sortMode = sequence[(sequence.indexOf(sortMode) + 1) % sequence.length];
+  sortButton.textContent = {
+    new:"Sort: New", rarity:"Sort: Rarity", name:"Sort: A-Z", level:"Sort: Level"
+  }[sortMode];
+  renderGrid();
+});
+
+document.getElementById("detailClose").addEventListener("click", closeItem);
+overlay.addEventListener("click", event => { if (event.target === overlay) closeItem(); });
+document.addEventListener("keydown", event => { if (event.key === "Escape") closeItem(); });
+
+document.getElementById("minimizeButton").addEventListener("click", () => {
+  const shell = document.getElementById("inventoryShell");
+  shell.classList.toggle("minimized");
+  document.getElementById("minimizeButton").textContent = shell.classList.contains("minimized") ? "+" : "X";
+});
+
+drawFilters();
+renderGrid();
+</script>
+</body>
+</html>
