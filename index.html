@@ -299,6 +299,49 @@ body{
   .item-grid{grid-template-columns:repeat(4,76px);gap:8px 8px}
   .header-title{font-size:24px}
 }
+
+.about-me{
+  position:fixed;
+  right:14px;
+  bottom:14px;
+  z-index:4;
+  max-width:210px;
+  padding:8px 10px;
+  background:rgba(24,23,37,.94);
+  border:2px solid #000;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,.45);
+  color:#fff;
+  font-family:Sen-Bold,sans-serif;
+  font-size:11px;
+  line-height:1.25;
+}
+.about-me strong{
+  display:block;
+  margin-bottom:2px;
+  font-family:Poppins-ExtraBold,sans-serif;
+  font-size:12px;
+  color:#80deff;
+  -webkit-text-stroke:1px #000;
+  paint-order:stroke;
+}
+.about-me a{
+  color:#9fd7ff;
+  text-decoration:none;
+}
+.about-me a:hover{
+  text-decoration:underline;
+}
+@media(max-width:520px){
+  .about-me{
+    right:8px;
+    bottom:76px;
+    max-width:175px;
+    font-size:10px;
+    padding:7px 8px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -604,5 +647,13 @@ document.getElementById("minimizeButton").addEventListener("click", () => {
 drawFilters();
 renderGrid();
 </script>
+
+<div class="about-me">
+  <strong>About me</strong>
+  Just a doctor trying these codey majiggies.<br>
+  Reddit: <a href="https://www.reddit.com/user/quicknfresh/" target="_blank" rel="noopener">@quicknfresh</a><br>
+  GitHub: <a href="https://github.com/quicknfresh" target="_blank" rel="noopener">quicknfresh</a>
+</div>
+
 </body>
 </html>
