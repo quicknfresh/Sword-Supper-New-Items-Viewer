@@ -1,71 +1,78 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sword & Supper — Gear & Resource Viewer</title>
-<style>
-:root{--blue:#053f9f;--blue2:#072b72;--ink:#10223f;--panel:#eef4fb;--gold:#ffd35b;--line:#9cb7da;--shadow:0 18px 55px rgba(0,0,0,.35)}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;color:#fff;background:#07142c}
-body:before{content:"";position:fixed;inset:0;background:linear-gradient(rgba(4,17,45,.62),rgba(4,17,45,.84)),url('https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/backgrounds/weapon_market.jpg') center/cover no-repeat;z-index:-1}
-.app{max-width:1180px;margin:auto;padding:20px}.hero{display:flex;gap:16px;align-items:end;justify-content:space-between;margin-bottom:16px}.hero h1{margin:0;font-size:clamp(28px,5vw,48px);text-shadow:0 3px 0 #001}.hero p{margin:4px 0 0;color:#dbe9ff}.status{font-size:13px;background:#001a44cc;border:1px solid #5e8bd1;border-radius:999px;padding:8px 12px}
-.shell{background:linear-gradient(#0a4ab7,#032d78);border:3px solid #78a9e6;border-radius:20px;box-shadow:var(--shadow);overflow:hidden}.toolbar{display:flex;flex-wrap:wrap;gap:10px;padding:14px;background:#08275e;border-bottom:2px solid #6e9fe0}.tab,.filter{border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}.tab{background:#1d5fc2;color:#fff}.tab.active{background:var(--gold);color:#14213d}.filter{background:#dceaff;color:#18325c}.filter.active{background:#84b6ff}.search{flex:1;min-width:220px;border-radius:12px;border:2px solid #79a6de;padding:10px 12px;font-size:16px}
-.summary{display:flex;gap:8px;flex-wrap:wrap;padding:12px 14px;background:#06245b}.pill{background:#ffffff20;border:1px solid #ffffff35;padding:6px 10px;border-radius:999px;font-size:13px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:16px;min-height:320px}.card{display:block;text-align:left;color:#17233d;background:linear-gradient(#fff,#dbe9fb);border:2px solid #9dbce3;border-radius:15px;padding:12px;cursor:pointer;min-height:144px;box-shadow:0 7px 0 #001a44}.card:hover{transform:translateY(-2px)}.icon{height:70px;display:grid;place-items:center;background:#b9d4f6;border-radius:10px;margin-bottom:8px;overflow:hidden}.icon img{max-width:68px;max-height:68px}.name{font-weight:900}.meta{font-size:12px;color:#4a5d78;margin-top:5px}.rarity{display:inline-block;margin-top:7px;padding:3px 7px;border-radius:999px;font-size:11px;text-transform:uppercase;font-weight:900}.resource-icon{font-size:42px}.empty{grid-column:1/-1;padding:70px 20px;text-align:center;color:#dbe9ff}
-.overlay{position:fixed;inset:0;background:#001026cc;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}.overlay.open{display:flex}.modal{width:min(850px,100%);max-height:92vh;overflow:auto;background:var(--panel);color:var(--ink);border:4px solid #85afe5;border-radius:18px;box-shadow:var(--shadow)}.modal-head{position:sticky;top:0;display:flex;justify-content:space-between;gap:10px;align-items:center;background:#153f82;color:white;padding:14px 16px;z-index:2}.modal-head h2{margin:0}.close{border:0;border-radius:50%;width:38px;height:38px;font-size:22px;cursor:pointer}.modal-body{padding:18px}.section{margin-top:18px;font-size:17px;font-weight:900;color:#063f9d;border-bottom:2px solid #a9bfdb;padding-bottom:5px}.row{background:white;border:1px solid #bfd0e4;border-radius:10px;padding:10px;margin-top:8px}.drop{display:grid;grid-template-columns:1fr auto;gap:8px}.chance{font-weight:900;color:#b34d00}.small{font-size:12px;color:#61728a}.levels{display:flex;gap:6px;flex-wrap:wrap}.level{border:1px solid #789ac3;background:white;border-radius:8px;padding:6px 9px;cursor:pointer}.level.active{background:#1258b5;color:#fff}.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{background:#d9e8fb;border-radius:999px;padding:5px 9px;font-size:12px}.about{position:fixed;right:10px;bottom:8px;background:#00183dcc;border:1px solid #4c75ae;border-radius:10px;padding:7px 9px;font-size:10px;color:#dbe8ff}.about a{color:#9bc4ff}.loading{animation:pulse 1s infinite alternate}@keyframes pulse{to{opacity:.45}}
-@media(max-width:650px){.hero{align-items:start;flex-direction:column}.grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:10px}.card{min-height:130px}.about{position:static;margin:10px auto;width:max-content}.drop{grid-template-columns:1fr}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Sword & Supper gear and resource drop viewer">
+  <title>Sword & Supper — Gear & Resource Viewer</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="app">
-  <div class="hero"><div><h1>Sword & Supper</h1><p>Full gear, upgrade materials, enemies, maps and drop probabilities.</p></div><div id="status" class="status loading">Loading latest game data…</div></div>
-  <main class="shell">
-    <div class="toolbar">
-      <button class="tab active" data-view="gear">Gear</button>
-      <button class="tab" data-view="resources">Resources</button>
-      <input id="search" class="search" placeholder="Search gear or resources…">
-    </div>
-    <div id="filters" class="toolbar"></div>
-    <div id="summary" class="summary"></div>
-    <div id="grid" class="grid"><div class="empty">Preparing the database…</div></div>
+  <div class="game-bg" aria-hidden="true"></div>
+  <div class="game-dim" aria-hidden="true"></div>
+
+  <main class="page">
+    <section class="inventory-shell" id="inventoryShell">
+      <header class="header">
+        <div>
+          <div class="header-title">Gear & Resources</div>
+          <div class="load-status loading" id="status">Loading latest game data…</div>
+        </div>
+        <button class="close-button" id="minimizeButton" title="Minimize" aria-label="Minimize">X</button>
+      </header>
+
+      <nav class="category-nav" aria-label="Viewer category">
+        <button class="category-button active" data-view="gear" title="Gear">
+          <img src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Sword_2.png" alt="">
+          <span>Gear</span>
+        </button>
+        <button class="category-button" data-view="resources" title="Resources">
+          <img src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Wood.png" alt="">
+          <span>Resources</span>
+        </button>
+      </nav>
+
+      <nav class="filter-nav" id="filters" aria-label="Filters"></nav>
+
+      <div class="inventory-body">
+        <div class="controls">
+          <div class="search-wrap"><input id="searchInput" placeholder="Search gear…" autocomplete="off"></div>
+          <button class="sort-button" id="sortButton">Sort: Level</button>
+        </div>
+        <div class="result-summary" id="summary">Preparing database…</div>
+        <div class="item-grid" id="itemGrid"><div class="empty-message">Loading…</div></div>
+      </div>
+
+      <footer class="bottom-bar" aria-hidden="true">
+        <img class="bottom-icon" src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Blueprint.png" alt="">
+        <img class="bottom-icon" src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Map_2.png" alt="">
+        <img class="bottom-icon" src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Sword_2.png" alt="">
+        <img class="bottom-icon" src="https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/inventory/PictoIcon_Wood.png" alt="">
+      </footer>
+    </section>
   </main>
-</div>
-<div id="overlay" class="overlay"><section class="modal"><header class="modal-head"><h2 id="modalTitle"></h2><button id="close" class="close">×</button></header><div id="modalBody" class="modal-body"></div></section></div>
-<div class="about"><strong>About me</strong><br>Just a doctor trying these codey majiggies.<br><a href="https://www.reddit.com/user/quicknfresh/">@quicknfresh</a> · <a href="https://github.com/quicknfresh">GitHub</a></div>
-<script>
-const RAW='https://raw.githubusercontent.com/asufyani/sword_supper_data_viewer/master/src/utils/';
-const ICON='https://cabbageidle-eimoap-0-0-85-webview.devvit.net/assets/ui/item-icons/';
-const state={items:{},loot:{},enemies:{},maps:{},gear:[],resources:[],drops:{},view:'gear',filter:'All',query:''};
-const $=s=>document.querySelector(s); const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function evaluateObject(text,name,scope={}){text=text.replace(/^import .*$/gm,'').replace(new RegExp('export const '+name+'\\s*:[^=]+='),'return ');return Function(...Object.keys(scope),text)(...Object.values(scope));}
-async function getData(){const [it,lo,en,ma]=await Promise.all(['items.ts','loot.ts','enemies.ts','mapEnemies.ts'].map(f=>fetch(RAW+f).then(r=>{if(!r.ok)throw Error(f+' '+r.status);return r.text()})));state.items=evaluateObject(it,'items');state.loot=evaluateObject(lo,'et');state.enemies=evaluateObject(en,'z3',{et:state.loot});state.maps=evaluateObject(ma,'Z0');buildIndexes();}
-function levelRange(t){return t.maxLevel?`${t.minLevel}–${t.maxLevel}`:`${t.minLevel}+`}
-function tableNames(){const names=new Map;Object.entries(state.loot).forEach(([k,v])=>names.set(v,k));return names}
-function mapEnemyIndex(){const out={};Object.entries(state.maps).forEach(([mapId,table])=>table.tiers.forEach(t=>t.items.forEach(x=>{if(!x.id)return;(out[x.id]??=[]).push({mapId,levels:levelRange(t),spawnWeight:x.weight||0,total:t.items.reduce((n,y)=>n+(y.weight||0),0)})})));return out}
-function human(s){return String(s).replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[_-]/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}
-function buildIndexes(){const tNames=tableNames(),enemyMaps=mapEnemyIndex(),byTable={};Object.entries(state.enemies).forEach(([id,e])=>e.lootTables.forEach(t=>{const key=tNames.get(t);if(key)(byTable[key]??=[]).push({id,name:e.name||human(id),maps:enemyMaps[id]||[]})}));
-state.drops={}; const seen=new Set;
-function walk(tableKey,mult=1,trail=[],rootKey=tableKey){const signature=rootKey+'|'+tableKey+'|'+trail.join('>');if(seen.has(signature)||trail.length>7)return;seen.add(signature);const table=state.loot[tableKey];if(!table)return;table.tiers.forEach(t=>{const total=t.items.reduce((n,x)=>n+(x.weight||0),0);t.items.forEach(x=>{const p=total?(x.weight||0)/total:0;if(x.id){(state.drops[x.id]??=[]).push({table:tableKey,root:rootKey,levels:levelRange(t),chance:mult*p,quantity:x.quantity,enemies:byTable[rootKey]||byTable[tableKey]||[],trail:[...trail,tableKey]})}else if(x.tableId)walk(x.tableId,mult*p,[...trail,tableKey],rootKey)})})}
-Object.keys(state.loot).forEach(k=>walk(k));
-state.gear=Object.values(state.items).filter(i=>i.tags?.includes('equipment')).sort((a,b)=>(a.requiredLevel||0)-(b.requiredLevel||0)||a.name.localeCompare(b.name));
-const required=new Set;Object.values(state.items).forEach(i=>i.upgrades?.forEach(u=>u.requires?.forEach(r=>required.add(r.id))));
-state.resources=[...required].map(id=>state.items[id]||{id,name:human(id),tags:['resource'],rarity:'common',description:'Upgrade material'}).sort((a,b)=>a.name.localeCompare(b.name));
-render();$('#status').textContent=`${state.gear.length} gear · ${state.resources.length} resources`;$('#status').classList.remove('loading')}
-function slots(){return ['All',...new Set(state.gear.flatMap(i=>i.equipSlots||[]))]}
-function renderFilters(){const list=state.view==='gear'?slots():['All','Has drops','No direct drops'];$('#filters').innerHTML=list.map(x=>`<button class="filter ${state.filter===x?'active':''}" data-filter="${esc(x)}">${esc(x)}</button>`).join('');document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;render()})}
-function rarityColor(r){return {common:'#aab4c3',uncommon:'#64b56f',rare:'#3486db',epic:'#a05bd6',legendary:'#f2a62b',mythic:'#e45454'}[r]||'#aaa'}
-function filtered(){const q=state.query.toLowerCase();let rows=state.view==='gear'?state.gear:state.resources;return rows.filter(i=>{const text=(i.name+' '+i.id+' '+(i.equipSlots||[]).join(' ')).toLowerCase();if(q&&!text.includes(q))return false;if(state.view==='gear'&&state.filter!=='All'&&!i.equipSlots?.includes(state.filter))return false;if(state.view==='resources'&&state.filter==='Has drops'&&!(state.drops[i.id]?.length))return false;if(state.view==='resources'&&state.filter==='No direct drops'&&state.drops[i.id]?.length)return false;return true})}
-function render(){renderFilters();const rows=filtered();$('#summary').innerHTML=`<span class="pill">Showing ${rows.length}</span><span class="pill">View: ${state.view==='gear'?'Full gear database':'Resource drop finder'}</span>`;$('#grid').innerHTML=rows.length?rows.map(i=>card(i)).join(''):'<div class="empty">No matching entries.</div>';document.querySelectorAll('.card').forEach(b=>b.onclick=()=>openItem(b.dataset.id))}
-function card(i){const img=i.assetName?`<img loading="lazy" src="${ICON}${encodeURIComponent(i.assetName)}.png" onerror="this.style.display='none'">`:`<span class="resource-icon">◆</span>`;const meta=state.view==='gear'?(i.equipSlots||[]).join(' · '):`${state.drops[i.id]?.length||0} drop routes`;return `<button class="card" data-id="${esc(i.id)}"><span class="icon">${img}</span><span class="name">${esc(i.name||human(i.id))}</span><div class="meta">${esc(meta)}</div><span class="rarity" style="background:${rarityColor(i.rarity)}">${esc(i.rarity||'resource')}</span></button>`}
-function statText(s){let v=s.value;if(Math.abs(v)<=1&&(String(s.stat).match(/Crit|Dodge|Resist|Chance/i)))v=(v*100).toFixed(0)+'%';return `${human(s.stat)}: ${v}`}
-function openItem(id){const item=state.items[id]||state.resources.find(x=>x.id===id);$('#modalTitle').textContent=item.name||human(id);const isGear=item.tags?.includes('equipment');$('#modalBody').innerHTML=isGear?gearDetails(item):resourceDetails(item);$('#overlay').classList.add('open');document.querySelectorAll('.resource-link').forEach(b=>b.onclick=()=>openItem(b.dataset.id))}
-function gearFamily(base){const out=[base],seen=new Set([base.id]);let cur=base;while(cur?.upgrades?.[0]?.yields&&!seen.has(cur.upgrades[0].yields)){cur=state.items[cur.upgrades[0].yields];if(!cur)break;seen.add(cur.id);out.push(cur)}return out}
-function gearDetails(item){const fam=gearFamily(item);return `<p>${esc(item.description||'')}</p><div class="section">Versions</div><div class="levels">${fam.map((x,n)=>`<button class="level ${n===0?'active':''}" onclick="document.querySelectorAll('.version').forEach((v,i)=>v.style.display=i===${n}?'block':'none');document.querySelectorAll('.level').forEach((b,i)=>b.classList.toggle('active',i===${n}))">${esc(x.name)}</button>`).join('')}</div>${fam.map((x,n)=>`<div class="version" style="display:${n?'none':'block'}"><div class="section">Stats</div>${(x.statModifiers||[]).map(s=>`<div class="row">${esc(statText(s))}</div>`).join('')||'<div class="row">No stat modifiers</div>'}${x.damage?Object.entries(x.damage).map(([k,v])=>`<div class="row">${esc(human(k))} damage: ${esc(v)}</div>`).join(''):''}<div class="section">Abilities</div>${(x.abilities||[]).map(a=>`<div class="row">${esc(human(a.id))}${a.params?' · '+esc(JSON.stringify(a.params)):''}</div>`).join('')||'<div class="row">None</div>'}<div class="section">Upgrade requirements</div>${(x.upgrades?.[0]?.requires||[]).map(r=>`<button class="row resource-link" data-id="${esc(r.id)}"><strong>${esc(r.amount)} × ${esc(state.items[r.id]?.name||human(r.id))}</strong></button>`).join('')||'<div class="row">Final version</div>'}</div>`).join('')}<div class="section">Where to farm</div>${dropRows(item.id)}`}
-function sourceLabel(d){const enemies=d.enemies||[];if(enemies.length){const maps=[...new Set(enemies.flatMap(e=>e.maps.map(m=>human(m.mapId))))];return `${enemies.map(e=>e.name).join(', ')}${maps.length?' · '+maps.join(', '):''}`}return human(d.root||d.table)}
-function qty(q){return Array.isArray(q)?q.join('–'):(q??'1')}
-function dropRows(id){const rows=state.drops[id]||[];if(!rows.length)return '<div class="row">No direct loot-table drop found. This may be crafted, upgraded, quest-gated or granted elsewhere.</div>';return rows.sort((a,b)=>b.chance-a.chance).map(d=>`<div class="row drop"><div><strong>${esc(sourceLabel(d))}</strong><div class="small">Enemy/loot level ${esc(d.levels)} · Quantity ${esc(qty(d.quantity))}</div><div class="small">Route: ${esc(d.trail.map(human).join(' → '))}</div></div><div class="chance">${(d.chance*100).toFixed(3)}%</div></div>`).join('')}
-function resourceDetails(item){const requiredBy=Object.values(state.items).filter(i=>i.upgrades?.some(u=>u.requires?.some(r=>r.id===item.id)));return `<p>${esc(item.description||'Upgrade material')}</p><div class="section">Drop locations and probabilities</div>${dropRows(item.id)}<div class="section">Used to upgrade</div><div class="chips">${requiredBy.slice(0,100).map(i=>`<span class="chip">${esc(i.name)}</span>`).join('')||'<span class="chip">No upgrade usage found</span>'}</div>`}
-$('.tab[data-view="gear"]').onclick=()=>{state.view='gear';state.filter='All';document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='gear'));render()};$('.tab[data-view="resources"]').onclick=()=>{state.view='resources';state.filter='All';document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='resources'));render()};$('#search').oninput=e=>{state.query=e.target.value;render()};$('#close').onclick=()=>$('#overlay').classList.remove('open');$('#overlay').onclick=e=>{if(e.target.id==='overlay')e.currentTarget.classList.remove('open')};document.onkeydown=e=>{if(e.key==='Escape')$('#overlay').classList.remove('open')};
-getData().catch(err=>{$('#status').textContent='Data load failed';$('#status').classList.remove('loading');$('#grid').innerHTML=`<div class="empty"><strong>Could not load the upstream database.</strong><br>${esc(err.message)}<br><br>Refresh the page or check GitHub connectivity.</div>`;console.error(err)});
-</script>
+
+  <div class="detail-overlay" id="detailOverlay">
+    <article class="item-modal" id="itemModal" role="dialog" aria-modal="true" aria-labelledby="modalName">
+      <button class="detail-close" id="detailClose" aria-label="Close">X</button>
+      <div class="item-modal-header" id="modalHeader">
+        <div class="modal-name" id="modalName"></div>
+        <div class="modal-rarity" id="modalRarity"></div>
+        <div class="modal-icon" id="modalIcon"></div>
+        <div class="modal-min-level" id="modalLevel"></div>
+      </div>
+      <div class="level-selector" id="levelSelector"></div>
+      <div class="item-modal-body" id="modalBody"></div>
+    </article>
+  </div>
+
+  <aside class="about-me">
+    <strong>About me</strong>
+    Just a doctor trying these codey majiggies.<br>
+    Reddit: <a href="https://www.reddit.com/user/quicknfresh/" target="_blank" rel="noopener">@quicknfresh</a><br>
+    GitHub: <a href="https://github.com/quicknfresh" target="_blank" rel="noopener">quicknfresh</a>
+  </aside>
+
+  <script src="app.js"></script>
 </body>
 </html>
