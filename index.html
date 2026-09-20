@@ -19,7 +19,7 @@ body{
   color:#fff;font-family:Sen-Bold,Arial,sans-serif;
   background:#111728;
 }
-.matsuri-bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:#111728;pointer-events:none}
+.matsuri-bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:#111728;pointer-events:none}
 .matsuri-stage{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:max(100vw,176.2827vh);height:max(56.7271vw,100vh);overflow:hidden;
@@ -30,7 +30,7 @@ body.modal-open{overflow:hidden}
 button,input{font:inherit}
 button{border:0}
 a{color:#8ed7ff}
-.page-wrap{min-height:100vh;padding:22px 12px 80px;display:flex;justify-content:center;align-items:flex-start}
+.page-wrap{position:relative;z-index:1;min-height:100vh;padding:22px 12px 80px;display:flex;justify-content:center;align-items:flex-start}
 .viewer-shell{
   width:min(590px,100%);background:var(--bag);border:3px solid #000;border-radius:24px;
   overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.58),0 0 0 1px rgba(255,255,255,.08);
@@ -104,7 +104,7 @@ a{color:#8ed7ff}
 .item-card-meta{display:block;margin-top:2px;color:#8fb7e8;font-size:.52rem;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty-state{grid-column:1/-1;padding:60px 15px;text-align:center;color:#bcd}
 .about{
-  width:min(590px,calc(100% - 24px));margin:14px auto 0;color:#92a1b6;font-size:.73rem;text-align:center;line-height:1.5
+  position:relative;z-index:1;width:min(590px,calc(100% - 24px));margin:14px auto 0;color:#92a1b6;font-size:.73rem;text-align:center;line-height:1.5
 }
 
 /* Modal */
