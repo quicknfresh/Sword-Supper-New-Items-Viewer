@@ -14,15 +14,18 @@
   --panel:#181725;--panel2:#29293b;--grey:#e5edf2;--ink:#10131d;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#050710}
+html,body{margin:0;min-height:100%;background:#111728}
 body{
   color:#fff;font-family:Sen-Bold,Arial,sans-serif;
-  background:
-    radial-gradient(circle at 50% 12%,rgba(37,132,255,.28),transparent 28rem),
-    linear-gradient(rgba(2,8,20,.78),rgba(0,0,0,.92)),
-    linear-gradient(145deg,#152340,#090c15 55%,#190d25);
-  background-attachment:fixed;
+  background:#111728;
 }
+.matsuri-bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:#111728;pointer-events:none}
+.matsuri-stage{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:max(100vw,176.2827vh);height:max(56.7271vw,100vh);overflow:hidden;
+}
+.matsuri-layer{position:absolute;left:0;width:100%;background-repeat:repeat-x;background-position:center top;background-size:auto 100%}
+.matsuri-shade{position:absolute;inset:0;background:linear-gradient(rgba(7,10,18,.18),rgba(5,8,15,.32));z-index:20}
 body.modal-open{overflow:hidden}
 button,input{font:inherit}
 button{border:0}
@@ -42,7 +45,7 @@ a{color:#8ed7ff}
 }
 .subtitle{margin-top:7px;font-size:.78rem;color:#d9f4ff;text-shadow:0 2px 0 #000}
 .category-tabs{
-  display:grid;grid-template-columns:repeat(5,1fr);background:#1e2440;border-bottom:3px solid #000;
+  display:grid;grid-template-columns:repeat(6,1fr);background:#1e2440;border-bottom:3px solid #000;
 }
 .category-tab{
   min-width:0;padding:10px 4px 9px;background:linear-gradient(to bottom,#353d61,#1e2440);
@@ -212,10 +215,13 @@ a{color:#8ed7ff}
   .controls{flex-direction:column}
   .sort-button{width:100%}
 }
+.item-card.recent-card .item-square:after{content:"NEW";position:absolute;left:3px;top:3px;padding:2px 4px;border-radius:5px;background:#ffcf36;color:#1a1605;border:1px solid #000;font-family:Poppins-ExtraBold;font-size:.45rem;line-height:1}
+.recent-note{grid-column:1/-1;margin:0 0 2px;padding:8px 10px;border-radius:10px;background:rgba(18,23,45,.88);border:1px solid rgba(255,255,255,.16);color:#dfeaff;font-size:.68rem;line-height:1.35}
 
 </style>
 </head>
 <body>
+<div id="matsuriBg" class="matsuri-bg" aria-hidden="true"></div>
 <div class="page-wrap">
   <main class="viewer-shell" aria-label="Sword & Supper Gear and Resource Viewer">
     <header class="viewer-header">
@@ -224,7 +230,8 @@ a{color:#8ed7ff}
     </header>
 
     <nav class="category-tabs" aria-label="Categories">
-      <button class="category-tab active" data-mode="gear">Gear</button>
+      <button class="category-tab active" data-mode="recent">New</button>
+      <button class="category-tab" data-mode="gear">Gear</button>
       <button class="category-tab" data-mode="cosmetics">Cosmetics</button>
       <button class="category-tab" data-mode="resources">Resources</button>
       <button class="category-tab" data-mode="blueprints">Blueprints</button>
@@ -285,7 +292,7 @@ window.SS_DATA={"version":"0.0.89","base":"https://cabbageidle-eimoap-0-0-89-web
   const COSMETIC_SLOTS = ["Hat","Shirt","Cloak"];
   const RARITY_ORDER = {mythic:0, legendary:1, epic:2, rare:3, uncommon:4, common:5};
   const SLOT_ORDER = Object.fromEntries([...COMBAT_SLOTS, ...COSMETIC_SLOTS].map((x,i)=>[x,i]));
-  const state = { mode:"gear", slot:"All", sort:"name", query:"", selected:null, selectedLevel:0 };
+  const state = { mode:"recent", slot:"All", sort:"name", query:"", selected:null, selectedLevel:0 };
 
   const els = {
     grid: document.getElementById("itemGrid"),
@@ -303,8 +310,35 @@ window.SS_DATA={"version":"0.0.89","base":"https://cabbageidle-eimoap-0-0-89-web
     modalMeta: document.getElementById("modalMeta"),
     levelSelector: document.getElementById("levelSelector"),
     modalBody: document.getElementById("modalBody"),
-    datasetSummary: document.getElementById("datasetSummary")
+    datasetSummary: document.getElementById("datasetSummary"),
+    matsuriBg: document.getElementById("matsuriBg")
   };
+
+  // ---------- Summer Matsuri fixed backdrop ----------
+  // The production game renders these environment textures as horizontally tiled Phaser tileSprites.
+  const MATSURI_LAYERS = [
+    ["sky",0,545],["stars",0,424],["sea",507,290],["rock_far",490,304],
+    ["rock_near1",425,373],["rock_near2",330,468],["walkable_area",675,358],
+    ["lantern_top",230,254],["lantern_bottom",484,294]
+  ];
+  function renderMatsuriBackground() {
+    if (!els.matsuriBg) return;
+    const H=1033;
+    const stage=document.createElement("div");
+    stage.className="matsuri-stage";
+    for (const [name,y,h] of MATSURI_LAYERS) {
+      const layer=document.createElement("div");
+      layer.className=`matsuri-layer matsuri-${name}`;
+      layer.style.top=`${((y-10)/H*100).toFixed(5)}%`;
+      layer.style.height=`${(h/H*100).toFixed(5)}%`;
+      layer.style.backgroundImage=`url("${BASE}/assets/battle/environments/summer_matsuri/${name}.png")`;
+      stage.appendChild(layer);
+    }
+    const shade=document.createElement("div");
+    shade.className="matsuri-shade";
+    stage.appendChild(shade);
+    els.matsuriBg.replaceChildren(stage);
+  }
 
   function normalizeItem(id, raw) {
     return {
@@ -412,9 +446,29 @@ window.SS_DATA={"version":"0.0.89","base":"https://cabbageidle-eimoap-0-0-89-web
   const gearFamilies = families.filter(f => COMBAT_SLOTS.includes(f.slot));
   const cosmeticFamilies = families.filter(f => COSMETIC_SLOTS.includes(f.slot));
 
+  // Explicit current/recent set keeps the quick "what's new?" function of the original viewer.
+  const RECENT_FAMILY_IDS = [
+    "HeartlandShirt","EnchantersCap","HeartwoodRing","SparksilkBelt","VenomslakeShard","Ravager","Flashstrike",
+    "LastWord","BlightedBlade","FortuneFulfilled","DazzleCharm","GloriousAmulet","SavageSolitaire","GloriousSignet",
+    "EvadersBinding","StarbrightSash","ExplorersAlly","WingedHelm","NoviceSerape","BoltproofSerape","ScorchedSerape",
+    "FrostweaveSerape","ShadowSerape","RivetedCuirass",
+    "BlueMonsterMask","Chonmage","CuteCatlikeBow","FestiveHachimaki","GreenMonsterMask","PinkDemonMask",
+    "PurpleDemonMask","RedMonsterMask","ToughMushroomMask","YellowDemonMask"
+  ];
+  const RECENT_BLUEPRINT_IDS = [
+    "BlueprintBlueMonsterMask","BlueprintGreenMonsterMask","BlueprintPinkDemonMask","BlueprintPurpleDemonMask",
+    "BlueprintRedMonsterMask","BlueprintToughMushroomMask","BlueprintYellowDemonMask",
+    "BlueprintBoltproofSerape","BlueprintScorchedSerape","BlueprintFrostweaveSerape","BlueprintShadowSerape"
+  ];
+  const recentFamilies = RECENT_FAMILY_IDS.map(id => families.find(f=>f.id===id)).filter(Boolean);
+  const recentBlueprints = RECENT_BLUEPRINT_IDS.map(id => ITEMS[id]).filter(Boolean).map(item=>({
+    id:item.id,name:item.name,slot:"Blueprint",rarity:item.rarity,item,levels:[item],recent:true
+  }));
+  const recentRows = [...recentFamilies.map(f=>({...f,recent:true})), ...recentBlueprints];
+
   els.datasetSummary.textContent =
     `${Object.keys(ITEMS).length} item definitions · ${gearFamilies.length} gear families · ` +
-    `${cosmeticFamilies.length} cosmetic families · ${blueprints.length} blueprints · ${resources.length} resources/materials · v${D.version}`;
+    `${cosmeticFamilies.length} cosmetic families · ${blueprints.length} blueprints · ${resources.length} resources/materials · ${recentRows.length} recent entries · v${D.version}`;
 
   // ---------- Loot probability engine ----------
   const probMemo = new Map();
@@ -631,7 +685,8 @@ window.SS_DATA={"version":"0.0.89","base":"https://cabbageidle-eimoap-0-0-89-web
   // ---------- Render main list ----------
   function currentRows() {
     let rows;
-    if (state.mode==="gear") rows=[...gearFamilies];
+    if (state.mode==="recent") rows=[...recentRows];
+    else if (state.mode==="gear") rows=[...gearFamilies];
     else if (state.mode==="cosmetics") rows=[...cosmeticFamilies];
     else if (state.mode==="resources") rows=resources.map(item=>({id:item.id,name:item.name,slot:"Resource",rarity:item.rarity,item,levels:[item]}));
     else if (state.mode==="blueprints") rows=blueprints.map(item=>({id:item.id,name:item.name,slot:"Blueprint",rarity:item.rarity,item,levels:[item]}));
@@ -682,10 +737,13 @@ window.SS_DATA={"version":"0.0.89","base":"https://cabbageidle-eimoap-0-0-89-web
       els.grid.innerHTML=`<div class="empty-state">No matching items.</div>`;
       return;
     }
-    els.grid.innerHTML=rows.map(row=>{
+    const recentIntro = state.mode==="recent" && !state.query
+      ? `<div class="recent-note">Current/recent content recovered from the v${esc(D.version)} production bundle, including the newest combat-gear block, Summer Matsuri cosmetics, and their blueprints. Use Gear/Cosmetics/Blueprints for the complete catalog.</div>`
+      : "";
+    els.grid.innerHTML=recentIntro + rows.map(row=>{
       const item=row.levels[0] || row.item;
       const isBp=item.tags.includes("blueprint");
-      return `<button class="item-card" data-id="${esc(row.id)}">
+      return `<button class="item-card${row.recent?" recent-card":""}" data-id="${esc(row.id)}">
         <span class="item-square" style="background-image:url('${equipBg(item.rarity)}')">
           <img class="item-art${isBp?" blueprint-art":""}" src="${iconUrl(item)}" alt="" loading="lazy"
                onerror="this.style.opacity='.12'">
@@ -860,6 +918,7 @@ window.SS_DATA={"version":"0.0.89","base":"https://cabbageidle-eimoap-0-0-89-web
   els.overlay.addEventListener("click",e=>{if(e.target===els.overlay) closeModal();});
   document.addEventListener("keydown",e=>{if(e.key==="Escape") closeModal();});
 
+  renderMatsuriBackground();
   renderAll();
 })();
 
